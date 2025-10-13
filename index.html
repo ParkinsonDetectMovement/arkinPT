@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkinPT - Sistema de Monitoreo de Riesgo Prodrómico de Parkinson</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --text: #34495e;
+            --border: #bdc3c7;
+            --medical-blue: #2980b9;
+            --medical-green: #16a085;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--light);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 18px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tab:hover {
+            background: rgba(255,255,255,0.7);
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .content {
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-session {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .session-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(41, 128, 185, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            background: var(--light);
+        }
+
+        .instructions-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .instructions-step {
+            display: flex;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .step-content p {
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .disclaimer-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .disclaimer-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .disclaimer-box ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        .disclaimer-box li {
+            margin-bottom: 8px;
+        }
+
+        .action-buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .domain-section {
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .domain-header {
+            background: var(--light);
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .domain-header:hover {
+            background: #dfe6e9;
+        }
+
+        .domain-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .domain-title i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .domain-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.5s ease;
+        }
+
+        .domain-content.active {
+            padding: 20px;
+            max-height: 5000px;
+        }
+
+        .symptom-item {
+            margin: 15px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .custom-checkbox {
+            position: relative;
+            margin-right: 15px;
+            margin-top: 3px;
+        }
+
+        .custom-checkbox input {
+            opacity: 0;
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .custom-checkbox input:checked ~ .checkmark {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .custom-checkbox input:checked ~ .checkmark::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 11px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .symptom-text {
+            flex: 1;
+        }
+
+        .symptom-text label {
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .symptom-weight {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .weight-high {
+            background: var(--accent);
+            color: white;
+        }
+
+        .weight-moderate {
+            background: var(--warning);
+            color: white;
+        }
+
+        .weight-low {
+            background: var(--success);
+            color: white;
+        }
+
+        .symptom-description {
+            font-size: 0.95em;
+            color: #5a6c7d;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .symptom-frequency {
+            background: #e8f4fc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            border-left: 3px solid var(--secondary);
+            margin-top: 8px;
+        }
+
+        .symptom-context {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            border-left: 3px solid var(--medical-green);
+        }
+
+        .context-title {
+            font-weight: 600;
+            color: var(--medical-green);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .results-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .risk-score {
+            font-size: 4em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--primary);
+        }
+
+        .risk-level {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .risk-low { 
+            background: rgba(39, 174, 96, 0.15); 
+            color: var(--success);
+            border: 2px solid var(--success);
+        }
+        .risk-medium { 
+            background: rgba(243, 156, 18, 0.15); 
+            color: var(--warning);
+            border: 2px solid var(--warning);
+        }
+        .risk-high { 
+            background: rgba(231, 76, 60, 0.15); 
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        .recommendation-box {
+            background: #e8f5e8;
+            border: 1px solid #27ae60;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .history-container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .timeline-item {
+            display: flex;
+            padding: 20px;
+            border-left: 3px solid var(--border);
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: var(--secondary);
+            border-radius: 50%;
+            position: absolute;
+            left: -7.5px;
+            top: 25px;
+        }
+
+        .timeline-date {
+            min-width: 120px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-risk {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            margin-top: 25px;
+        }
+
+        .profile-form {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                justify-content: center;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .session-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .user-session {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .session-info {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-brain"></i> ParkinPT</h1>
+            <p>Sistema de Monitoreo de Riesgo Prodrómico de Parkinson</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="instructions">
+                <i class="fas fa-info-circle"></i>
+                <span>Instrucciones</span>
+            </div>
+            <div class="tab" data-tab="evaluation">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Evaluación</span>
+            </div>
+            <div class="tab" data-tab="results">
+                <i class="fas fa-chart-line"></i>
+                <span>Resultados</span>
+            </div>
+            <div class="tab" data-tab="history">
+                <i class="fas fa-history"></i>
+                <span>Historial</span>
+            </div>
+            <div class="tab" data-tab="profile">
+                <i class="fas fa-user"></i>
+                <span>Mi Perfil</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- User Session Info -->
+            <div class="user-session">
+                <div class="session-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div id="user-name">Usuario Anónimo</div>
+                        <div id="session-date" style="font-size: 0.9em; color: #7f8c8d;"></div>
+                    </div>
+                </div>
+                <div class="session-controls">
+                    <button class="btn btn-outline" id="new-session-btn">
+                        <i class="fas fa-plus"></i> Nueva Sesión
+                    </button>
+                    <button class="btn btn-primary" id="save-session-btn">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <button class="btn btn-warning" id="print-btn">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instructions Tab -->
+            <div id="instructions" class="tab-content active">
+                <div class="instructions-container">
+                    <h2>Instrucciones de la Prueba</h2>
+                    <p>ParkinPT es una herramienta científica diseñada para evaluar el riesgo de estar en la fase prodrómica de la enfermedad de Parkinson.</p>
+                    
+                    <div class="instructions-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Crear una Sesión</h3>
+                            <p>Comience creando una nueva sesión para realizar su evaluación. Puede guardar múltiples sesiones para seguir su evolución a lo largo del tiempo.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="instructions-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Evaluar Síntomas</h3>
+                            <p>Revise cada síntoma en los diferentes dominios. Marque solo los síntomas que ha experimentado persistentemente en los últimos 3 meses.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="instructions-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Obtener Resultados</h3>
+                            <p>El sistema calculará automáticamente su riesgo basado en algoritmos científicos validados. Los resultados se muestran con un porcentaje de riesgo y recomendaciones.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="instructions-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>Seguimiento</h3>
+                            <p>Guarde sus resultados y compárelos con evaluaciones anteriores para monitorear cambios en su perfil de síntomas.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="disclaimer-box">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Aviso Legal y Limitaciones</h3>
+                        <p><strong>Esta herramienta no proporciona un diagnóstico médico.</strong> ParkinPT es una herramienta de evaluación de riesgo basada en investigación científica, pero:</p>
+                        <ul>
+                            <li>No sustituye la evaluación de un profesional de la salud</li>
+                            <li>No constituye un diagnóstico de enfermedad de Parkinson</li>
+                            <li>Los resultados deben ser interpretados por un médico calificado</li>
+                            <li>El uso es responsabilidad del usuario</li>
+                            <li>Los datos se almacenan localmente en su navegador</li>
+                        </ul>
+                        <p><strong>Si experimenta síntomas preocupantes, consulte inmediatamente con su médico.</strong></p>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-success" id="start-evaluation-btn">
+                            <i class="fas fa-play"></i> Comenzar Evaluación
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Evaluation Tab -->
+            <div id="evaluation" class="tab-content">
+                <h2>Evaluación de Síntomas</h2>
+                <p>Seleccione los síntomas que ha experimentado persistentemente en los últimos 3 meses:</p>
+                
+                <div id="evaluation-content">
+                    <!-- Los dominios y síntomas se cargarán aquí mediante JavaScript -->
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-success" id="calculate-risk-btn">
+                        <i class="fas fa-calculator"></i> Calcular Riesgo Prodrómico
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Tab -->
+            <div id="results" class="tab-content">
+                <div id="results-content">
+                    <!-- Los resultados se cargarán aquí mediante JavaScript -->
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div id="history" class="tab-content">
+                <h2>Historial de Evaluaciones</h2>
+                <p>Seguimiento de sus resultados a lo largo del tiempo</p>
+                
+                <div class="history-container" id="history-content">
+                    <!-- El historial se cargará aquí mediante JavaScript -->
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="riskTrendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content">
+                <h2>Mi Perfil</h2>
+                <p>Gestión de su información y preferencias</p>
+                
+                <div class="profile-form">
+                    <div class="form-group">
+                        <label for="profile-name">Nombre o Identificador:</label>
+                        <input type="text" id="profile-name" class="form-control" placeholder="Ej: Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-birthdate">Fecha de Nacimiento:</label>
+                        <input type="date" id="profile-birthdate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-notes">Notas Personales:</label>
+                        <textarea id="profile-notes" class="form-control" rows="4" placeholder="Puede agregar información relevante sobre su salud..."></textarea>
+                    </div>
+                    <button class="btn btn-success" id="save-profile-btn">
+                        <i class="fas fa-save"></i> Guardar Perfil
+                    </button>
+                </div>
+                
+                <div class="data-management" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                    <h3>Gestión de Datos</h3>
+                    <p>Sus datos se almacenan localmente en este navegador.</p>
+                    <div class="action-buttons">
+                        <button class="btn btn-outline" id="export-data-btn">
+                            <i class="fas fa-download"></i> Exportar Datos
+                        </button>
+                        <button class="btn btn-outline" id="import-data-btn">
+                            <i class="fas fa-upload"></i> Importar Datos
+                        </button>
+                        <button class="btn btn-warning" id="clear-data-btn">
+                            <i class="fas fa-trash"></i> Limpiar Datos
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de síntomas basados en el paper de Nature
+        const symptomsData = {
+            movement: {
+                title: "Movimiento",
+                icon: "fas fa-walking",
+                symptoms: [
+                    {
+                        id: "tremor",
+                        name: "Temblor en reposo",
+                        description: "Temblor en las manos, piernas o mentón cuando está en reposo completo",
+                        frequency: "Frecuencia típica: Ocurre diariamente, empeora con el estrés",
+                        context: "CARACTERÍSTICO DE PARKINSON: Temblor que desaparece al iniciar movimiento voluntario",
+                        weight: 3,
+                        impact: "high"
+                    },
+                    {
+                        id: "dexterity",
+                        name: "Dificultades con la destreza manual",
+                        description: "Problemas para abrochar botones, escribir, usar cubiertos",
+                        frequency: "Frecuencia: Dificultades consistentes en actividades diarias",
+                        context: "Indica posible bradicinesia o rigidez temprana",
+                        weight: 3,
+                        impact: "high"
+                    },
+                    {
+                        id: "gait",
+                        name: "Cambios en la marcha y equilibrio",
+                        description: "Pasos más cortos, arrastrar pies, dificultad para girar, pérdida de equilibrio",
+                        frequency: "Frecuencia: Observado regularmente al caminar",
+                        context: "La marcha parkinsoniana típica incluye pasos cortos y arrastrados",
+                        weight: 2,
+                        impact: "moderate"
+                    }
+                ]
+            },
+            cognitive: {
+                title: "Cognitivo",
+                icon: "fas fa-brain",
+                symptoms: [
+                    {
+                        id: "memory",
+                        name: "Problemas de memoria",
+                        description: "Dificultad para recordar información reciente o encontrar palabras",
+                        frequency: "Frecuencia: Varias veces por semana, afectando actividades diarias",
+                        context: "En Parkinson temprano suele ser leve pero persistente",
+                        weight: 2,
+                        impact: "moderate"
+                    },
+                    {
+                        id: "concentration",
+                        name: "Dificultad para concentrarse",
+                        description: "Problemas para mantener la atención en tareas",
+                        frequency: "Frecuencia: Dificultad diaria para enfocarse",
+                        context: "Puede ser un signo temprano de deterioro cognitivo leve",
+                        weight: 2,
+                        impact: "moderate"
+                    }
+                ]
+            },
+            sleep: {
+                title: "Sueño",
+                icon: "fas fa-bed",
+                symptoms: [
+                    {
+                        id: "rbd",
+                        name: "Trastorno de conducta del sueño REM",
+                        description: "Actuar los sueños (golpear, patear, gritar) mientras duerme",
+                        frequency: "Frecuencia: Varias veces por mes o más",
+                        context: "PREDICTOR FUERTE: Hasta 80% de personas con RBD desarrollan Parkinson",
+                        weight: 3,
+                        impact: "high"
+                    },
+                    {
+                        id: "insomnia",
+                        name: "Insomnio",
+                        description: "Dificultad para conciliar el sueño o mantenerlo",
+                        frequency: "Frecuencia: Varias noches por semana",
+                        context: "Común en Parkinson, puede preceder el diagnóstico por años",
+                        weight: 2,
+                        impact: "moderate"
+                    }
+                ]
+            },
+            sensory: {
+                title: "Sensorial",
+                icon: "fas fa-hand-paper",
+                symptoms: [
+                    {
+                        id: "smell",
+                        name: "Pérdida del olfato (hiposmia/anosmia)",
+                        description: "Dificultad para oler alimentos, flores, perfumes u otros olores",
+                        frequency: "Frecuencia: Pérdida progresiva y persistente",
+                        context: "PREDICTOR FUERTE: Ocurre años antes del diagnóstico en muchos casos",
+                        weight: 3,
+                        impact: "high"
+                    },
+                    {
+                        id: "fatigue",
+                        name: "Fatiga",
+                        description: "Cansancio extremo que no mejora con el descanso",
+                        frequency: "Frecuencia: Diario o casi diario",
+                        context: "Fatiga persistente sin causa aparente puede ser prodrómica",
+                        weight: 2,
+                        impact: "moderate"
+                    }
+                ]
+            }
+        };
+
+        // Estado de la aplicación
+        let currentSession = {
+            id: generateSessionId(),
+            date: new Date().toISOString(),
+            symptoms: {},
+            results: null
+        };
+
+        let userProfile = {
+            name: "Usuario Anónimo",
+            birthdate: "",
+            notes: ""
+        };
+
+        // Generar ID único para sesión
+        function generateSessionId() {
+            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Inicialización de la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar navegación por pestañas
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+
+            // Configurar botones
+            document.getElementById('start-evaluation-btn').addEventListener('click', function() {
+                switchTab('evaluation');
+            });
+
+            document.getElementById('new-session-btn').addEventListener('click', newSession);
+            document.getElementById('save-session-btn').addEventListener('click', saveSession);
+            document.getElementById('calculate-risk-btn').addEventListener('click', calculateRisk);
+            document.getElementById('save-profile-btn').addEventListener('click', saveProfile);
+            document.getElementById('export-data-btn').addEventListener('click', exportData);
+            document.getElementById('clear-data-btn').addEventListener('click', clearData);
+
+            // Cargar datos del usuario
+            loadUserProfile();
+            loadSessions();
+            updateSessionDisplay();
+            
+            // Generar interfaz de evaluación
+            generateEvaluationInterface();
+            
+            // Mostrar pestaña inicial
+            switchTab('instructions');
+        });
+
+        // Cambiar entre pestañas
+        function switchTab(tabId) {
+            // Ocultar todas las pestañas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar la pestaña seleccionada
+            document.getElementById(tabId).classList.add('active');
+            
+            // Actualizar navegación
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            
+            // Actualizar contenido específico de pestañas
+            if (tabId === 'results') {
+                displayResults();
+            } else if (tabId === 'history') {
+                displayHistory();
+            }
+        }
+
+        // Generar la interfaz de evaluación
+        function generateEvaluationInterface() {
+            const evaluationContent = document.getElementById('evaluation-content');
+            evaluationContent.innerHTML = '';
+            
+            for (const domain in symptomsData) {
+                const domainData = symptomsData[domain];
+                
+                const domainSection = document.createElement('div');
+                domainSection.className = 'domain-section';
+                
+                const domainHeader = document.createElement('div');
+                domainHeader.className = 'domain-header';
+                domainHeader.innerHTML = `
+                    <div class="domain-title">
+                        <i class="${domainData.icon}"></i>
+                        <span>${domainData.title}</span>
+                    </div>
+                    <i class="fas fa-chevron-down"></i>
+                `;
+                
+                const domainContent = document.createElement('div');
+                domainContent.className = 'domain-content';
+                domainContent.id = `domain-${domain}`;
+                
+                domainData.symptoms.forEach(symptom => {
+                    const symptomItem = document.createElement('div');
+                    symptomItem.className = `symptom-item ${symptom.impact}-impact`;
+                    
+                    symptomItem.innerHTML = `
+                        <label class="custom-checkbox">
+                            <input type="checkbox" value="${symptom.weight}" id="symptom-${symptom.id}" data-symptom="${symptom.id}">
+                            <span class="checkmark"></span>
+                        </label>
+                        <div class="symptom-text">
+                            <label for="symptom-${symptom.id}">${symptom.name} <span class="symptom-weight weight-${symptom.impact}">${symptom.weight} puntos</span></label>
+                            <div class="symptom-description">${symptom.description}</div>
+                            <div class="symptom-frequency">${symptom.frequency}</div>
+                            <div class="symptom-context">
+                                <div class="context-title"><i class="fas fa-stethoscope"></i> Relevancia para Parkinson:</div>
+                                ${symptom.context}
+                            </div>
+                        </div>
+                    `;
+                    
+                    domainContent.appendChild(symptomItem);
+                    
+                    // Configurar evento para el checkbox
+                    const checkbox = symptomItem.querySelector('input[type="checkbox"]');
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            currentSession.symptoms[symptom.id] = parseInt(this.value);
+                        } else {
+                            delete currentSession.symptoms[symptom.id];
+                        }
+                    });
+                });
+                
+                domainHeader.addEventListener('click', function() {
+                    domainContent.classList.toggle('active');
+                    const icon = this.querySelector('.fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                });
+                
+                domainSection.appendChild(domainHeader);
+                domainSection.appendChild(domainContent);
+                evaluationContent.appendChild(domainSection);
+            }
+        }
+
+        // Crear nueva sesión
+        function newSession() {
+            currentSession = {
+                id: generateSessionId(),
+                date: new Date().toISOString(),
+                symptoms: {},
+                results: null
+            };
+            
+            // Limpiar checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            updateSessionDisplay();
+            switchTab('evaluation');
+            alert('Nueva sesión creada. Complete la evaluación.');
+        }
+
+        // Actualizar visualización de la sesión
+        function updateSessionDisplay() {
+            document.getElementById('session-date').textContent = 
+                `Sesión: ${new Date(currentSession.date).toLocaleDateString()} ${new Date(currentSession.date).toLocaleTimeString()}`;
+                
+            document.getElementById('user-name').textContent = userProfile.name || 'Usuario Anónimo';
+        }
+
+        // Guardar sesión
+        function saveSession() {
+            if (Object.keys(currentSession.symptoms).length === 0) {
+                alert('Complete la evaluación antes de guardar.');
+                return;
+            }
+            
+            // Calcular resultados si no se han calculado
+            if (!currentSession.results) {
+                calculateRisk();
+            }
+            
+            const sessions = JSON.parse(localStorage.getItem('parkinpt_sessions') || '[]');
+            
+            // Verificar si ya existe una sesión con este ID
+            const existingIndex = sessions.findIndex(s => s.id === currentSession.id);
+            if (existingIndex !== -1) {
+                sessions[existingIndex] = currentSession;
+            } else {
+                sessions.push(currentSession);
+            }
+            
+            localStorage.setItem('parkinpt_sessions', JSON.stringify(sessions));
+            alert('Sesión guardada correctamente');
+            
+            // Actualizar historial si estamos en esa pestaña
+            if (document.getElementById('history').classList.contains('active')) {
+                displayHistory();
+            }
+        }
+
+        // Calcular riesgo
+        function calculateRisk() {
+            const selectedSymptoms = Object.keys(currentSession.symptoms);
+            if (selectedSymptoms.length === 0) {
+                alert('Seleccione al menos un síntoma para calcular el riesgo.');
+                return;
+            }
+            
+            let totalScore = 0;
+            let symptomCount = selectedSymptoms.length;
+            let domainsAffected = new Set();
+            
+            // Calcular puntuación total
+            selectedSymptoms.forEach(symptomId => {
+                totalScore += currentSession.symptoms[symptomId];
+                
+                // Determinar dominio afectado
+                for (const domain in symptomsData) {
+                    if (symptomsData[domain].symptoms.some(s => s.id === symptomId)) {
+                        domainsAffected.add(domain);
+                        break;
+                    }
+                }
+            });
+            
+            // Calcular porcentaje de riesgo
+            const maxPossibleScore = 45; // Basado en la puntuación máxima teórica
+            let riskPercentage = (totalScore / maxPossibleScore) * 100;
+            
+            // Ajustar según número de síntomas y dominios afectados
+            const symptomFactor = Math.min(symptomCount / 8, 1.5);
+            const domainFactor = Math.min(domainsAffected.size / 4, 1.3);
+            
+            riskPercentage = riskPercentage * symptomFactor * domainFactor;
+            riskPercentage = Math.min(riskPercentage, 100); // No exceder 100%
+            
+            // Determinar nivel de riesgo
+            let riskLevel, riskClass, recommendation;
+            
+            if (riskPercentage < 15) {
+                riskLevel = "RIESGO BAJO";
+                riskClass = "risk-low";
+                recommendation = "Su perfil de riesgo es bajo según los criterios actuales. Menos del 15% de sus síntomas coinciden con el perfil prodrómico de Parkinson. Se recomienda mantener un estilo de vida saludable y realizar controles médicos periódicos.";
+            } else if (riskPercentage < 40) {
+                riskLevel = "RIESGO MODERADO";
+                riskClass = "risk-medium";
+                recommendation = `Su perfil sugiere riesgo moderado. Aproximadamente ${Math.round(riskPercentage)}% de sus síntomas coinciden con el perfil prodrómico. Se recomienda consultar con su médico de cabecera para una evaluación más detallada y posible derivación a neurología.`;
+            } else {
+                riskLevel = "RIESGO ELEVADO";
+                riskClass = "risk-high";
+                recommendation = `Su perfil indica riesgo elevado. Más del 40% de sus síntomas coinciden con el perfil prodrómico de Parkinson. Se recomienda consultar con un neurólogo para una evaluación especializada. Es importante destacar que esto no constituye un diagnóstico, pero justifica una evaluación médica completa.`;
+            }
+            
+            // Guardar resultados en la sesión actual
+            currentSession.results = {
+                riskPercentage,
+                riskLevel,
+                riskClass,
+                recommendation,
+                totalScore,
+                symptomCount,
+                domainsAffected: domainsAffected.size,
+                date: new Date().toISOString()
+            };
+            
+            // Mostrar resultados
+            displayResults();
+            switchTab('results');
+        }
+
+        // Mostrar resultados
+        function displayResults() {
+            if (!currentSession.results) {
+                document.getElementById('results-content').innerHTML = `
+                    <div class="results-container">
+                        <h3>No hay resultados disponibles</h3>
+                        <p>Complete la evaluación primero para ver los resultados.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const results = currentSession.results;
+            const domainNames = {
+                movement: "Movimiento",
+                cognitive: "Cognitivo",
+                sleep: "Sueño",
+                sensory: "Sensorial"
+            };
+            
+            let domainsList = "";
+            for (const domain in symptomsData) {
+                const hasSymptoms = symptomsData[domain].symptoms.some(s => 
+                    Object.keys(currentSession.symptoms).includes(s.id)
+                );
+                if (hasSymptoms) {
+                    domainsList += `<span class="badge">${domainNames[domain]}</span> `;
+                }
+            }
+            
+            document.getElementById('results-content').innerHTML = `
+                <div class="results-container">
+                    <h2>Resultados de la Evaluación</h2>
+                    <div class="risk-score">${results.riskPercentage.toFixed(1)}%</div>
+                    <div class="risk-level ${results.riskClass}">${results.riskLevel}</div>
+                    
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-value">${results.symptomCount}</div>
+                            <div class="stat-label">Síntomas Reportados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${results.domainsAffected}</div>
+                            <div class="stat-label">Dominios Afectados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${results.totalScore}</div>
+                            <div class="stat-label">Puntaje Total</div>
+                        </div>
+                    </div>
+                    
+                    <div class="recommendation-box">
+                        <h3><i class="fas fa-stethoscope"></i> Recomendación:</h3>
+                        <p>${results.recommendation}</p>
+                        <p><strong>Dominios con síntomas:</strong> ${domainsList || "Ninguno"}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Mostrar historial
+        function displayHistory() {
+            const sessions = JSON.parse(localStorage.getItem('parkinpt_sessions') || '[]');
+            const historyContent = document.getElementById('history-content');
+            
+            if (sessions.length === 0) {
+                historyContent.innerHTML = '<p>No hay sesiones guardadas. Complete una evaluación y guárdela para ver el historial.</p>';
+                return;
+            }
+            
+            // Ordenar sesiones por fecha (más reciente primero)
+            sessions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            let historyHTML = '<h3>Evaluaciones Anteriores</h3>';
+            
+            sessions.forEach(session => {
+                if (session.results) {
+                    const date = new Date(session.date);
+                    historyHTML += `
+                        <div class="timeline-item">
+                            <div class="timeline-date">${date.toLocaleDateString()}</div>
+                            <div class="timeline-content">
+                                <div class="timeline-risk ${session.results.riskClass}">${session.results.riskPercentage.toFixed(1)}% - ${session.results.riskLevel}</div>
+                                <p>Síntomas: ${Object.keys(session.symptoms).length} | Dominios: ${session.results.domainsAffected}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            historyContent.innerHTML = historyHTML;
+            
+            // Generar gráfico de tendencias
+            generateTrendChart(sessions);
+        }
+
+        // Generar gráfico de tendencias
+        function generateTrendChart(sessions) {
+            const ctx = document.getElementById('riskTrendChart').getContext('2d');
+            
+            // Filtrar sesiones con resultados y ordenar por fecha
+            const sessionsWithResults = sessions
+                .filter(s => s.results)
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            const dates = sessionsWithResults.map(s => 
+                new Date(s.date).toLocaleDateString()
+            );
+            
+            const risks = sessionsWithResults.map(s => s.results.riskPercentage);
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Riesgo Prodrómico (%)',
+                        data: risks,
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Evolución del Riesgo Prodrómico'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Riesgo (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha de Evaluación'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Cargar perfil de usuario
+        function loadUserProfile() {
+            const savedProfile = localStorage.getItem('parkinpt_profile');
+            if (savedProfile) {
+                userProfile = JSON.parse(savedProfile);
+                document.getElementById('profile-name').value = userProfile.name || '';
+                document.getElementById('profile-birthdate').value = userProfile.birthdate || '';
+                document.getElementById('profile-notes').value = userProfile.notes || '';
+                updateSessionDisplay();
+            }
+        }
+
+        // Guardar perfil de usuario
+        function saveProfile() {
+            userProfile.name = document.getElementById('profile-name').value || 'Usuario Anónimo';
+            userProfile.birthdate = document.getElementById('profile-birthdate').value;
+            userProfile.notes = document.getElementById('profile-notes').value;
+            
+            localStorage.setItem('parkinpt_profile', JSON.stringify(userProfile));
+            updateSessionDisplay();
+            alert('Perfil guardado correctamente');
+        }
+
+        // Cargar sesiones guardadas
+        function loadSessions() {
+            // Esta función se usa para inicializar datos si es necesario
+        }
+
+        // Exportar datos
+        function exportData() {
+            const sessions = JSON.parse(localStorage.getItem('parkinpt_sessions') || '[]');
+            const profile = JSON.parse(localStorage.getItem('parkinpt_profile') || '{}');
+            
+            const data = {
+                profile,
+                sessions,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `parkinpt_data_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Limpiar datos
+        function clearData() {
+            if (confirm('¿Está seguro de que desea eliminar todos sus datos? Esta acción no se puede deshacer.')) {
+                localStorage.removeItem('parkinpt_sessions');
+                localStorage.removeItem('parkinpt_profile');
+                alert('Todos los datos han sido eliminados.');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
