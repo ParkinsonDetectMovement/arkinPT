@@ -615,28 +615,6 @@
             margin-top: 30px;
         }
 
-        .bibliography h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .bibliography ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-
-        .bibliography li {
-            margin-bottom: 10px;
-            padding-left: 20px;
-            text-indent: -20px;
-        }
-
-        .bibliography li:before {
-            content: "• ";
-            color: var(--secondary);
-            font-weight: bold;
-        }
-
         .interpretation-detail {
             background: white;
             border-radius: 10px;
@@ -743,6 +721,84 @@
             border-left: 4px solid var(--success);
         }
 
+        /* MEJORA: Estados de validación */
+        .form-control.valid {
+            border-color: var(--success);
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        }
+
+        .form-control.invalid {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .field-error {
+            color: var(--accent);
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .field-error.show {
+            display: block;
+        }
+
+        /* MEJORA: Análisis de progresión */
+        .progression-analysis {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .progression-level {
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .progression-level.estable {
+            background: rgba(39, 174, 96, 0.15);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .progression-level.aceleracion-moderada {
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .progression-level.aceleracion-significativa {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .progression-level.mejoria {
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        .calculating {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
         @media (max-width: 768px) {
             .tabs {
                 flex-direction: column;
@@ -785,7 +841,6 @@
         </div>
 
         <div class="tabs">
-            <!-- PERFIL COMO PRIMERA PESTAÑA -->
             <div class="tab active" data-tab="profile">
                 <i class="fas fa-user"></i>
                 <span>Mi Perfil</span>
@@ -833,7 +888,7 @@
                 </div>
             </div>
 
-            <!-- Profile Tab - AHORA ES LA PRIMERA -->
+            <!-- Profile Tab -->
             <div id="profile" class="tab-content active">
                 <h2>Mi Perfil Médico</h2>
                 <p>Complete su información médica para una evaluación más precisa</p>
@@ -848,33 +903,37 @@
                     <h3><i class="fas fa-user-circle"></i> Información Personal</h3>
                     <div class="form-group">
                         <label for="profile-name">Nombre o Identificador:</label>
-                        <input type="text" id="profile-name" class="form-control" placeholder="Ej: Juan Pérez">
+                        <input type="text" id="profile-name" class="form-control" placeholder="Ej: Juan Pérez" required>
+                        <div class="field-error" id="name-error"></div>
                     </div>
                     <div class="form-group">
                         <label for="profile-birthdate">Fecha de Nacimiento:</label>
-                        <input type="date" id="profile-birthdate" class="form-control">
+                        <input type="date" id="profile-birthdate" class="form-control" required>
+                        <div class="field-error" id="birthdate-error"></div>
                     </div>
                     <div class="form-group">
                         <label for="profile-sex">Sexo:</label>
-                        <select id="profile-sex" class="form-control">
+                        <select id="profile-sex" class="form-control" required>
                             <option value="">Seleccionar...</option>
                             <option value="male">Masculino</option>
                             <option value="female">Femenino</option>
                         </select>
+                        <div class="field-error" id="sex-error"></div>
                     </div>
                     
                     <h3 style="margin-top: 30px;"><i class="fas fa-stethoscope"></i> Antecedentes Médicos</h3>
                     <div class="form-group">
                         <label for="profile-family-history">Antecedentes familiares de Parkinson:</label>
-                        <select id="profile-family-history" class="form-control">
+                        <select id="profile-family-history" class="form-control" required>
                             <option value="">Seleccionar...</option>
                             <option value="yes">Sí</option>
                             <option value="no">No</option>
                             <option value="unknown">No estoy seguro</option>
                         </select>
+                        <div class="field-error" id="family-history-error"></div>
                     </div>
                     
-                    <!-- NUEVA SECCIÓN: Medicamentos -->
+                    <!-- SECCIÓN: Medicamentos -->
                     <div class="medication-section">
                         <h4><i class="fas fa-pills"></i> Medicamentos Actuales</h4>
                         <p>Seleccione los medicamentos que toma regularmente:</p>
@@ -887,7 +946,7 @@
                         </div>
                     </div>
                     
-                    <!-- NUEVA SECCIÓN: Condiciones Médicas -->
+                    <!-- SECCIÓN: Condiciones Médicas -->
                     <div class="condition-section">
                         <h4><i class="fas fa-file-medical"></i> Condiciones Médicas</h4>
                         <p>Seleccione las condiciones médicas que le han diagnosticado:</p>
@@ -991,7 +1050,7 @@
                 <h2>Evaluación de Síntomas</h2>
                 <p>Seleccione los síntomas que ha experimentado persistentemente en los últimos 3 meses:</p>
                 
-                <!-- NUEVA SECCIÓN: Duración de Síntomas -->
+                <!-- SECCIÓN: Duración de Síntomas -->
                 <div class="domain-section">
                     <div class="domain-header">
                         <div class="domain-title">
@@ -1023,6 +1082,11 @@
                     <!-- Los dominios y síntomas se cargarán aquí mediante JavaScript -->
                 </div>
                 
+                <div class="loading-spinner" id="calculation-spinner">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Calculando riesgo...</p>
+                </div>
+                
                 <div class="action-buttons">
                     <button class="btn btn-success" id="calculate-risk-btn">
                         <i class="fas fa-calculator"></i> Calcular Riesgo Prodrómico
@@ -1048,6 +1112,10 @@
                 
                 <div class="chart-container">
                     <canvas id="riskTrendChart"></canvas>
+                </div>
+                
+                <div id="progression-analysis-container">
+                    <!-- El análisis de progresión se cargará aquí mediante JavaScript -->
                 </div>
             </div>
         </div>
@@ -1337,7 +1405,51 @@
             familyHistory: 1.5
         };
 
-        // Factores de ajuste clínico - NUEVO
+        // MEJORA: Sistema avanzado de interacciones medicamentosas
+        const medicationInteractions = {
+            antipsychotics: {
+                parkinsonismRisk: 0.3,
+                symptoms: ['tremor', 'rigidity', 'gait'],
+                notes: "Puede causar parkinsonismo inducido por medicamentos"
+            },
+            antiemetics: {
+                parkinsonismRisk: 0.4,
+                symptoms: ['tremor', 'dexterity'],
+                notes: "Especialmente metoclopramida y proclorperazina"
+            },
+            antidepressants: {
+                parkinsonismRisk: 1.0,
+                symptoms: [],
+                notes: "Generalmente neutro, pero puede afectar síntomas en algunos casos"
+            },
+            anxiolytics: {
+                parkinsonismRisk: 1.0,
+                symptoms: [],
+                notes: "Generalmente neutro"
+            },
+            antihypertensives: {
+                parkinsonismRisk: 1.0,
+                symptoms: [],
+                notes: "Generalmente neutro"
+            },
+            statins: {
+                parkinsonismRisk: 1.0,
+                symptoms: [],
+                notes: "Generalmente neutro"
+            },
+            diabetes_meds: {
+                parkinsonismRisk: 1.0,
+                symptoms: [],
+                notes: "Generalmente neutro"
+            },
+            thyroid_meds: {
+                parkinsonismRisk: 1.0,
+                symptoms: [],
+                notes: "Generalmente neutro"
+            }
+        };
+
+        // Factores de ajuste clínico
         const clinicalAdjustments = {
             medications: {
                 antipsychotics: 0.3,    // Pueden causar parkinsonismo
@@ -1407,7 +1519,7 @@
             return 0.008;                 // 0.8%
         }
 
-        // NUEVO: Función para ajustar LRs por correlación
+        // MEJORA: Función para ajustar LRs por correlación
         function adjustForCorrelation(selectedSymptoms, combinedLR) {
             let adjustedLR = combinedLR;
             
@@ -1438,35 +1550,205 @@
             return adjustedLR;
         }
 
-        // NUEVO: Función para calcular ajustes clínicos
-        function calculateClinicalAdjustment() {
+        // MEJORA: Algoritmo mejorado de ajuste clínico
+        function calculateAdvancedClinicalAdjustment() {
             let adjustment = 1.0;
+            let adjustmentDetails = [];
             
-            // Duración de síntomas (de la evaluación)
-            const duration = document.getElementById('symptom-duration')?.value || 'lessThan3Months';
-            adjustment *= clinicalAdjustments.symptomDuration[duration];
+            // Ajuste por medicamentos que causan parkinsonismo
+            const parkinsonismMeds = userProfile.medications.filter(med => 
+                medicationInteractions[med] && medicationInteractions[med].parkinsonismRisk < 1.0
+            );
             
-            // Medicamentos (del perfil)
-            if (userProfile.medications.includes('antipsychotics')) {
-                adjustment *= clinicalAdjustments.medications.antipsychotics;
-            }
-            if (userProfile.medications.includes('antiemetics')) {
-                adjustment *= clinicalAdjustments.medications.antiemetics;
-            }
-            
-            // Comorbilidades (del perfil)
-            if (userProfile.conditions.includes('essential_tremor')) {
-                adjustment *= clinicalAdjustments.comorbidities.essential_tremor;
-            }
-            if (userProfile.conditions.includes('diabetes')) {
-                adjustment *= clinicalAdjustments.comorbidities.diabetes;
-            }
-            if (userProfile.conditions.includes('thyroid')) {
-                adjustment *= clinicalAdjustments.comorbidities.thyroid;
+            if (parkinsonismMeds.length > 0) {
+                const medAdjustment = parkinsonismMeds.reduce((acc, med) => 
+                    acc * medicationInteractions[med].parkinsonismRisk, 1.0
+                );
+                adjustment *= medAdjustment;
+                adjustmentDetails.push({
+                    type: 'medicamentos_parkinsonismo',
+                    factor: medAdjustment.toFixed(2),
+                    items: parkinsonismMeds.map(med => ({
+                        name: medicationsData.find(m => m.id === med)?.name,
+                        risk: medicationInteractions[med].parkinsonismRisk
+                    }))
+                });
             }
             
-            console.log(`Factor de ajuste clínico aplicado: ${adjustment.toFixed(2)}`);
-            return adjustment;
+            // Ajuste por condiciones que simulan Parkinson
+            const simulatingConditions = userProfile.conditions.filter(cond =>
+                ['essential_tremor', 'stroke'].includes(cond)
+            );
+            
+            if (simulatingConditions.length > 0) {
+                adjustment *= 0.7;
+                adjustmentDetails.push({
+                    type: 'condiciones_simuladoras',
+                    factor: 0.70,
+                    items: simulatingConditions.map(cond => 
+                        conditionsData.find(c => c.id === cond)?.name
+                    )
+                });
+            }
+            
+            // Ajuste por múltiples medicamentos neurolépticos
+            const neurolepticCount = userProfile.medications.filter(med =>
+                ['antipsychotics', 'antiemetics'].includes(med)
+            ).length;
+            
+            if (neurolepticCount >= 2) {
+                adjustment *= 0.6;
+                adjustmentDetails.push({
+                    type: 'múltiples_neurolépticos',
+                    factor: 0.60,
+                    count: neurolepticCount
+                });
+            }
+            
+            return { adjustment, details: adjustmentDetails };
+        }
+
+        // MEJORA: Sistema de validación robusto
+        function validateProfileData() {
+            const errors = [];
+            
+            // Validar fecha de nacimiento
+            if (userProfile.birthdate) {
+                const birthdate = new Date(userProfile.birthdate);
+                const today = new Date();
+                if (birthdate > today) {
+                    errors.push("La fecha de nacimiento no puede ser futura");
+                }
+                const age = calculateAge(userProfile.birthdate);
+                if (age > 120) {
+                    errors.push("Por favor verifique la fecha de nacimiento");
+                }
+                if (age < 18) {
+                    errors.push("Debe ser mayor de 18 años para usar esta herramienta");
+                }
+            } else {
+                errors.push("La fecha de nacimiento es obligatoria");
+            }
+            
+            // Validar que al menos un campo médico esté completo
+            if (userProfile.medications.length === 0 && userProfile.conditions.length === 0) {
+                errors.push("Por favor seleccione al menos un medicamento o condición médica");
+            }
+            
+            return errors;
+        }
+
+        // MEJORA: Feedback visual en tiempo real
+        function setupRealTimeValidation() {
+            const inputs = document.querySelectorAll('#profile input, #profile select, #profile textarea');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateField(this);
+                });
+            });
+        }
+
+        function validateField(field) {
+            const value = field.value.trim();
+            field.classList.remove('valid', 'invalid');
+            
+            if (!value && field.hasAttribute('required')) {
+                field.classList.add('invalid');
+                showFieldError(field, 'Este campo es obligatorio');
+                return false;
+            }
+            
+            // Validaciones específicas por campo
+            switch(field.id) {
+                case 'profile-birthdate':
+                    if (value) {
+                        const birthdate = new Date(value);
+                        const today = new Date();
+                        if (birthdate > today) {
+                            field.classList.add('invalid');
+                            showFieldError(field, 'La fecha no puede ser futura');
+                            return false;
+                        }
+                        const age = calculateAge(value);
+                        if (age > 120) {
+                            field.classList.add('invalid');
+                            showFieldError(field, 'La edad no puede ser mayor a 120 años');
+                            return false;
+                        }
+                        if (age < 18) {
+                            field.classList.add('invalid');
+                            showFieldError(field, 'Debe ser mayor de 18 años');
+                            return false;
+                        }
+                    }
+                    break;
+                case 'profile-name':
+                    if (value.length < 2) {
+                        field.classList.add('invalid');
+                        showFieldError(field, 'El nombre debe tener al menos 2 caracteres');
+                        return false;
+                    }
+                    break;
+            }
+            
+            field.classList.add('valid');
+            clearFieldError(field);
+            return true;
+        }
+
+        function showFieldError(field, message) {
+            let errorElement = field.parentNode.querySelector('.field-error');
+            if (!errorElement) {
+                errorElement = document.createElement('div');
+                errorElement.className = 'field-error';
+                field.parentNode.appendChild(errorElement);
+            }
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        function clearFieldError(field) {
+            const errorElement = field.parentNode.querySelector('.field-error');
+            if (errorElement) {
+                errorElement.classList.remove('show');
+            }
+        }
+
+        // MEJORA: Sistema de seguimiento de progresión
+        function analyzeProgression(sessions) {
+            if (sessions.length < 2) return null;
+            
+            const sortedSessions = sessions
+                .filter(s => s.results)
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            const firstSession = sortedSessions[0];
+            const lastSession = sortedSessions[sortedSessions.length - 1];
+            
+            const riskChange = lastSession.results.riskPercentage - firstSession.results.riskPercentage;
+            const monthsDiff = monthDifference(firstSession.date, lastSession.date);
+            const riskChangePerMonth = monthsDiff > 0 ? riskChange / monthsDiff : 0;
+            
+            let progressionLevel = 'estable';
+            if (riskChangePerMonth > 1) progressionLevel = 'aceleracion-moderada';
+            if (riskChangePerMonth > 2) progressionLevel = 'aceleracion-significativa';
+            if (riskChangePerMonth < -0.5) progressionLevel = 'mejoria';
+            
+            return {
+                riskChange,
+                riskChangePerMonth,
+                progressionLevel,
+                timeSpanMonths: monthsDiff,
+                sessionsCompared: sortedSessions.length,
+                firstDate: firstSession.date,
+                lastDate: lastSession.date
+            };
+        }
+
+        function monthDifference(date1, date2) {
+            const d1 = new Date(date1);
+            const d2 = new Date(date2);
+            return (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth());
         }
 
         // NUEVO: Función para criterios MDS
@@ -1722,6 +2004,9 @@
             // Actualizar estado de completitud del perfil
             updateProfileCompletion();
             
+            // Configurar validación en tiempo real
+            setupRealTimeValidation();
+            
             // Mostrar pestaña inicial (perfil)
             switchTab('profile');
         });
@@ -1886,7 +2171,7 @@
             }
         }
 
-        // NUEVO: Cálculo de riesgo mejorado
+        // MEJORA: Cálculo de riesgo mejorado
         function calculateEnhancedRisk() {
             const selectedSymptoms = Object.keys(currentSession.symptoms);
             if (selectedSymptoms.length === 0) {
@@ -1894,44 +2179,63 @@
                 return;
             }
             
-            // 1. Riesgo basal por edad
-            const userAge = calculateAge(userProfile.birthdate);
-            const baselineRisk = getBaselineRisk(userAge);
+            // Mostrar spinner de carga
+            document.getElementById('calculation-spinner').classList.add('active');
+            document.body.classList.add('calculating');
             
-            // 2. LR inicial por síntomas
-            let combinedLR = 1;
-            selectedSymptoms.forEach(symptomId => {
-                if (likelihoodRatios[symptomId]) {
-                    combinedLR *= likelihoodRatios[symptomId];
+            // Simular cálculo asíncrono para mejor UX
+            setTimeout(() => {
+                try {
+                    // 1. Riesgo basal por edad
+                    const userAge = calculateAge(userProfile.birthdate);
+                    const baselineRisk = getBaselineRisk(userAge);
+                    
+                    // 2. LR inicial por síntomas
+                    let combinedLR = 1;
+                    selectedSymptoms.forEach(symptomId => {
+                        if (likelihoodRatios[symptomId]) {
+                            combinedLR *= likelihoodRatios[symptomId];
+                        }
+                    });
+                    
+                    // 3. APLICAR AJUSTES DE CORRELACIÓN
+                    combinedLR = adjustForCorrelation(selectedSymptoms, combinedLR);
+                    
+                    // 4. Factores no modificables
+                    if (userProfile.sex === 'male') {
+                        combinedLR *= likelihoodRatios.male;
+                    }
+                    if (userProfile.familyHistory === 'yes') {
+                        combinedLR *= likelihoodRatios.familyHistory;
+                    }
+                    
+                    // 5. MEJORA: Aplicar factores clínicos avanzados
+                    const clinicalAdjustmentResult = calculateAdvancedClinicalAdjustment();
+                    combinedLR *= clinicalAdjustmentResult.adjustment;
+                    currentSession.clinicalAdjustmentDetails = clinicalAdjustmentResult.details;
+                    
+                    // 6. Cálculo bayesiano
+                    const postTestProbability = (baselineRisk * combinedLR) / 
+                                              ((baselineRisk * combinedLR) + (1 - baselineRisk));
+                    
+                    const riskPercentage = postTestProbability * 100;
+                    
+                    // 7. Determinar nivel con criterios MDS mejorados
+                    determineMDSCriteriaRisk(riskPercentage, selectedSymptoms, combinedLR, baselineRisk);
+                    
+                    // Ocultar spinner
+                    document.getElementById('calculation-spinner').classList.remove('active');
+                    document.body.classList.remove('calculating');
+                    
+                    displayResults();
+                    switchTab('results');
+                } catch (error) {
+                    console.error('Error en cálculo de riesgo:', error);
+                    alert('Error al calcular el riesgo. Por favor, intente nuevamente.');
+                    document.getElementById('calculation-spinner').classList.remove('active');
+                    document.body.classList.remove('calculating');
                 }
-            });
-            
-            // 3. APLICAR AJUSTES DE CORRELACIÓN
-            combinedLR = adjustForCorrelation(selectedSymptoms, combinedLR);
-            
-            // 4. Factores no modificables
-            if (userProfile.sex === 'male') {
-                combinedLR *= likelihoodRatios.male;
-            }
-            if (userProfile.familyHistory === 'yes') {
-                combinedLR *= likelihoodRatios.familyHistory;
-            }
-            
-            // 5. NUEVO: Aplicar factores clínicos
-            const clinicalFactor = calculateClinicalAdjustment();
-            combinedLR *= clinicalFactor;
-            
-            // 6. Cálculo bayesiano
-            const postTestProbability = (baselineRisk * combinedLR) / 
-                                      ((baselineRisk * combinedLR) + (1 - baselineRisk));
-            
-            const riskPercentage = postTestProbability * 100;
-            
-            // 7. Determinar nivel con criterios MDS mejorados
-            determineMDSCriteriaRisk(riskPercentage, selectedSymptoms, combinedLR, baselineRisk);
-            
-            displayResults();
-            switchTab('results');
+            }, 1500);
         }
 
         // Mostrar resultados
@@ -1994,11 +2298,6 @@
                 `;
             });
             
-            // Calcular ajuste clínico para mostrar
-            const clinicalAdjustment = calculateClinicalAdjustment();
-            const adjustmentText = clinicalAdjustment !== 1.0 ? 
-                ` (ajustado ×${clinicalAdjustment.toFixed(2)} por factores clínicos)` : '';
-            
             // Obtener información de medicamentos y condiciones del perfil
             const userMeds = userProfile.medications.map(medId => {
                 const med = medicationsData.find(m => m.id === medId);
@@ -2009,6 +2308,39 @@
                 const cond = conditionsData.find(c => c.id === condId);
                 return cond ? cond.name : condId;
             }).concat(userProfile.otherConditions ? [userProfile.otherConditions] : []);
+            
+            // MEJORA: Mostrar detalles de ajustes clínicos
+            let adjustmentHTML = '';
+            if (currentSession.clinicalAdjustmentDetails && currentSession.clinicalAdjustmentDetails.length > 0) {
+                adjustmentHTML = `
+                    <div class="adjustment-factor">
+                        <h4><i class="fas fa-adjust"></i> Factores Clínicos Aplicados</h4>
+                        <p>Se aplicó un factor de ajuste basado en:</p>
+                        <ul>
+                `;
+                
+                currentSession.clinicalAdjustmentDetails.forEach(detail => {
+                    adjustmentHTML += `<li><strong>${detail.type.replace('_', ' ')}:</strong> `;
+                    if (detail.items) {
+                        adjustmentHTML += detail.items.map(item => {
+                            if (typeof item === 'object') {
+                                return `${item.name} (×${item.risk})`;
+                            } else {
+                                return item;
+                            }
+                        }).join(', ');
+                    }
+                    if (detail.count) {
+                        adjustmentHTML += ` (${detail.count} medicamentos)`;
+                    }
+                    if (detail.factor) {
+                        adjustmentHTML += ` - Factor: ×${detail.factor}`;
+                    }
+                    adjustmentHTML += `</li>`;
+                });
+                
+                adjustmentHTML += `</ul></div>`;
+            }
             
             document.getElementById('results-content').innerHTML = `
                 <div class="results-container">
@@ -2024,7 +2356,7 @@
                             <div class="stat-label">Riesgo Basal (Población)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">${results.combinedLR.toFixed(1)}x${adjustmentText}</div>
+                            <div class="stat-value">${results.combinedLR.toFixed(1)}x</div>
                             <div class="stat-label">Factor Individual</div>
                         </div>
                         <div class="stat-card">
@@ -2046,17 +2378,7 @@
                         <p><strong>Criterios aplicados:</strong> ${getAppliedCriteria(Object.keys(currentSession.symptoms))}</p>
                     </div>
                     
-                    ${clinicalAdjustment !== 1.0 ? `
-                    <div class="adjustment-factor">
-                        <h4><i class="fas fa-adjust"></i> Factores Clínicos Aplicados</h4>
-                        <p>Se aplicó un factor de ajuste de ×${clinicalAdjustment.toFixed(2)} basado en:</p>
-                        <ul>
-                            <li>Duración de síntomas: ${document.getElementById('symptom-duration').options[document.getElementById('symptom-duration').selectedIndex].text}</li>
-                            ${userMeds.length > 0 ? `<li>Medicamentos: ${userMeds.join(', ')}</li>` : ''}
-                            ${userConditions.length > 0 ? `<li>Condiciones médicas: ${userConditions.join(', ')}</li>` : ''}
-                        </ul>
-                    </div>
-                    ` : ''}
+                    ${adjustmentHTML}
                     
                     <div class="symptom-details">
                         <h3><i class="fas fa-clipboard-list"></i> Síntomas Seleccionados</h3>
@@ -2081,9 +2403,11 @@
         function displayHistory() {
             const sessions = JSON.parse(localStorage.getItem('parkinpt_sessions') || '[]');
             const historyContent = document.getElementById('history-content');
+            const progressionContainer = document.getElementById('progression-analysis-container');
             
             if (sessions.length === 0) {
                 historyContent.innerHTML = '<p>No hay sesiones guardadas. Complete una evaluación y guárdela para ver el historial.</p>';
+                progressionContainer.innerHTML = '';
                 return;
             }
             
@@ -2108,6 +2432,62 @@
             });
             
             historyContent.innerHTML = historyHTML;
+            
+            // MEJORA: Mostrar análisis de progresión
+            const progression = analyzeProgression(sessions);
+            if (progression) {
+                let progressionLevelText = '';
+                switch(progression.progressionLevel) {
+                    case 'estable':
+                        progressionLevelText = 'Riesgo estable';
+                        break;
+                    case 'aceleracion-moderada':
+                        progressionLevelText = 'Aceleración moderada del riesgo';
+                        break;
+                    case 'aceleracion-significativa':
+                        progressionLevelText = 'Aceleración significativa del riesgo';
+                        break;
+                    case 'mejoria':
+                        progressionLevelText = 'Mejoría en el perfil de riesgo';
+                        break;
+                }
+                
+                progressionContainer.innerHTML = `
+                    <div class="progression-analysis">
+                        <h3><i class="fas fa-chart-line"></i> Análisis de Progresión</h3>
+                        <p>Comparando ${progression.sessionsCompared} evaluaciones desde ${new Date(progression.firstDate).toLocaleDateString()} hasta ${new Date(progression.lastDate).toLocaleDateString()}</p>
+                        <div class="stats-container" style="grid-template-columns: repeat(2, 1fr); margin: 15px 0;">
+                            <div class="stat-card">
+                                <div class="stat-value">${progression.riskChange > 0 ? '+' : ''}${progression.riskChange.toFixed(2)}%</div>
+                                <div class="stat-label">Cambio total en riesgo</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">${progression.riskChangePerMonth > 0 ? '+' : ''}${progression.riskChangePerMonth.toFixed(2)}%</div>
+                                <div class="stat-label">Cambio mensual promedio</div>
+                            </div>
+                        </div>
+                        <div class="progression-level ${progression.progressionLevel}">
+                            <strong>Nivel de progresión:</strong> ${progressionLevelText}
+                        </div>
+                        <p style="margin-top: 15px; font-size: 0.9em;">
+                            <i class="fas fa-info-circle"></i> 
+                            ${progression.riskChangePerMonth > 0 ? 
+                                'Se observa un aumento en el riesgo prodrómico. Consulte con su médico para evaluación.' :
+                                progression.riskChangePerMonth < 0 ?
+                                'Se observa una disminución en el riesgo prodrómico. Continúe con el monitoreo.' :
+                                'El riesgo se mantiene estable. Continúe con evaluaciones periódicas.'
+                            }
+                        </p>
+                    </div>
+                `;
+            } else {
+                progressionContainer.innerHTML = `
+                    <div class="progression-analysis">
+                        <h3><i class="fas fa-chart-line"></i> Análisis de Progresión</h3>
+                        <p>Se necesitan al menos 2 evaluaciones para analizar la progresión del riesgo.</p>
+                    </div>
+                `;
+            }
             
             // Generar gráfico de tendencias
             generateTrendChart(sessions);
@@ -2233,6 +2613,13 @@
                     userProfile.conditions.push(cond.id);
                 }
             });
+
+            // MEJORA: Validar los datos antes de guardar
+            const errors = validateProfileData();
+            if (errors.length > 0) {
+                alert('Errores en el perfil:\n\n' + errors.join('\n'));
+                return;
+            }
             
             localStorage.setItem('parkinpt_profile', JSON.stringify(userProfile));
             updateSessionDisplay();
