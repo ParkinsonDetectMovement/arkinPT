@@ -7,1136 +7,144 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --success: #27ae60;
-            --warning: #f39c12;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --text: #34495e;
-            --border: #bdc3c7;
-            --medical-blue: #2980b9;
-            --medical-green: #16a085;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-            position: relative;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
-            background-size: cover;
-        }
-
-        .header h1 {
-            font-size: 2.8em;
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-            position: relative;
-        }
-
-        .tabs {
-            display: flex;
-            background: var(--light);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .tab {
-            padding: 18px 25px;
-            cursor: pointer;
-            font-weight: 600;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tab:hover {
-            background: rgba(255,255,255,0.7);
-        }
-
-        .tab.active {
-            background: white;
-            border-bottom-color: var(--secondary);
-            color: var(--secondary);
-        }
-
-        .content {
-            padding: 30px;
-            min-height: 500px;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .user-session {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .session-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background: var(--secondary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2em;
-        }
-
-        .session-controls {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(41, 128, 185, 0.3);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #219653;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--border);
-            color: var(--text);
-        }
-
-        .btn-outline:hover {
-            background: var(--light);
-        }
-
-        .instructions-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .instructions-step {
-            display: flex;
-            margin-bottom: 30px;
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-        }
-
-        .step-number {
-            width: 50px;
-            height: 50px;
-            background: var(--secondary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-right: 20px;
-            flex-shrink: 0;
-        }
-
-        .step-content h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .step-content p {
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        .disclaimer-box {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 10px;
-            padding: 25px;
-            margin: 30px 0;
-        }
-
-        .disclaimer-box h3 {
-            color: #856404;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .disclaimer-box ul {
-            padding-left: 20px;
-            margin: 15px 0;
-        }
-
-        .disclaimer-box li {
-            margin-bottom: 8px;
-        }
-
-        .action-buttons {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .domain-section {
-            margin-bottom: 30px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-
-        .domain-header {
-            background: var(--light);
-            padding: 15px 20px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.3s;
-        }
-
-        .domain-header:hover {
-            background: #dfe6e9;
-        }
-
-        .domain-title {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-        }
-
-        .domain-title i {
-            margin-right: 10px;
-            font-size: 1.2em;
-        }
-
-        .domain-content {
-            padding: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease, padding 0.5s ease;
-        }
-
-        .domain-content.active {
-            padding: 20px;
-            max-height: 5000px;
-        }
-
-        .symptom-item {
-            margin: 15px 0;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .custom-checkbox {
-            position: relative;
-            margin-right: 15px;
-            margin-top: 3px;
-        }
-
-        .custom-checkbox input {
-            opacity: 0;
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            cursor: pointer;
-        }
-
-        .checkmark {
-            display: inline-block;
-            width: 22px;
-            height: 22px;
-            background: white;
-            border: 2px solid var(--border);
-            border-radius: 4px;
-            position: relative;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .custom-checkbox input:checked ~ .checkmark {
-            background: var(--secondary);
-            border-color: var(--secondary);
-        }
-
-        .custom-checkbox input:checked ~ .checkmark::after {
-            content: '';
-            position: absolute;
-            left: 6px;
-            top: 2px;
-            width: 6px;
-            height: 11px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
-
-        .symptom-text {
-            flex: 1;
-        }
-
-        .symptom-text label {
-            font-weight: 600;
-            cursor: pointer;
-            display: block;
-            margin-bottom: 5px;
-            font-size: 1.1em;
-        }
-
-        .symptom-weight {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-
-        .weight-high {
-            background: var(--accent);
-            color: white;
-        }
-
-        .weight-moderate {
-            background: var(--warning);
-            color: white;
-        }
-
-        .weight-low {
-            background: var(--success);
-            color: white;
-        }
-
-        .symptom-description {
-            font-size: 0.95em;
-            color: #5a6c7d;
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .symptom-frequency {
-            background: #e8f4fc;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.85em;
-            border-left: 3px solid var(--secondary);
-            margin-top: 8px;
-        }
-
-        .symptom-context {
+        /* ... (todos los estilos anteriores se mantienen igual) ... */
+        
+        /* Nuevos estilos para opciones "Ninguno" */
+        .none-option {
             background: #f8f9fa;
+            border: 2px solid #e9ecef;
             padding: 10px 15px;
-            border-radius: 6px;
-            margin-top: 10px;
-            font-size: 0.9em;
-            border-left: 3px solid var(--medical-green);
+            border-radius: 8px;
+            margin: 10px 0;
         }
-
-        .context-title {
-            font-weight: 600;
-            color: var(--medical-green);
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .results-container {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-        }
-
-        .risk-score {
-            font-size: 4em;
-            font-weight: bold;
-            text-align: center;
-            margin: 20px 0;
-            color: var(--primary);
-        }
-
-        .risk-level {
-            font-size: 1.8em;
-            font-weight: bold;
-            text-align: center;
-            margin: 15px 0;
-            padding: 10px 20px;
-            border-radius: 50px;
-            display: inline-block;
-        }
-
-        .risk-low { 
-            background: rgba(39, 174, 96, 0.15); 
-            color: var(--success);
-            border: 2px solid var(--success);
-        }
-        .risk-medium { 
-            background: rgba(243, 156, 18, 0.15); 
-            color: var(--warning);
-            border: 2px solid var(--warning);
-        }
-        .risk-high { 
-            background: rgba(231, 76, 60, 0.15); 
-            color: var(--accent);
-            border: 2px solid var(--accent);
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        .stat-card {
-            background: var(--light);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: var(--secondary);
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            color: #7f8c8d;
-        }
-
-        .recommendation-box {
+        
+        .none-option.selected {
             background: #e8f5e8;
-            border: 1px solid #27ae60;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
+            border-color: #27ae60;
         }
-
-        .history-container {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-        }
-
-        .timeline-item {
-            display: flex;
-            padding: 20px;
-            border-left: 3px solid var(--border);
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .timeline-item::before {
-            content: '';
-            width: 12px;
-            height: 12px;
-            background: var(--secondary);
-            border-radius: 50%;
-            position: absolute;
-            left: -7.5px;
-            top: 25px;
-        }
-
-        .timeline-date {
-            min-width: 120px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .timeline-content {
-            flex: 1;
-        }
-
-        .timeline-risk {
-            font-size: 1.3em;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .chart-container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-            margin-top: 25px;
-        }
-
-        .profile-form {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 1em;
-            transition: border 0.3s;
-        }
-
-        .form-control:focus {
-            border-color: var(--secondary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            background: var(--light);
-            border-radius: 15px;
-            font-size: 0.8em;
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-
-        .bibliography {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
-        }
-
-        .interpretation-detail {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 5px solid var(--secondary);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-
-        .interpretation-detail h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .symptom-detail {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-
-        .symptom-detail h4 {
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .action-plan {
-            background: #e8f4fc;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border-left: 5px solid var(--medical-blue);
-        }
-
-        .action-plan h3 {
-            color: var(--medical-blue);
-            margin-bottom: 15px;
-        }
-
-        .action-plan ul {
-            padding-left: 20px;
-        }
-
-        .action-plan li {
-            margin-bottom: 10px;
-        }
-
-        .clinical-adjustment {
-            background: #e8f4fc;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid var(--medical-blue);
-        }
-
-        .mds-badge {
-            display: inline-block;
-            padding: 8px 15px;
-            background: var(--primary);
-            color: white;
-            border-radius: 20px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .adjustment-factor {
-            background: #fff3cd;
-            padding: 10px;
-            border-radius: 6px;
-            margin: 10px 0;
-            border-left: 3px solid var(--warning);
-        }
-
-        .checkbox-group {
+        
+        .checkbox-group.with-none {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 10px;
         }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .checkbox-item input {
-            margin-right: 5px;
-        }
-
-        .medication-section, .condition-section {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border-left: 3px solid var(--medical-green);
-        }
-
-        .profile-completion {
-            background: #e8f5e8;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 4px solid var(--success);
-        }
-
-        /* Estados de validación */
-        .form-control.valid {
-            border-color: var(--success);
-            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
-        }
-
-        .form-control.invalid {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
-        }
-
-        .field-error {
-            color: var(--accent);
-            font-size: 0.8em;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .field-error.show {
-            display: block;
-        }
-
-        /* Análisis de progresión */
-        .progression-analysis {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border-left: 4px solid var(--secondary);
-        }
-
-        .progression-level {
-            padding: 10px;
-            border-radius: 6px;
-            text-align: center;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        .progression-level.estable {
-            background: rgba(39, 174, 96, 0.15);
-            color: var(--success);
-            border: 1px solid var(--success);
-        }
-
-        .progression-level.aceleracion-moderada {
-            background: rgba(243, 156, 18, 0.15);
-            color: var(--warning);
-            border: 1px solid var(--warning);
-        }
-
-        .progression-level.aceleracion-significativa {
-            background: rgba(231, 76, 60, 0.15);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-
-        .progression-level.mejoria {
-            background: rgba(52, 152, 219, 0.15);
-            color: var(--secondary);
-            border: 1px solid var(--secondary);
-        }
-
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .loading-spinner.active {
-            display: block;
-        }
-
-        .calculating {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        @media (max-width: 768px) {
-            .tabs {
-                flex-direction: column;
-            }
-            
-            .tab {
-                justify-content: center;
-            }
-            
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .session-controls {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .user-session {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            
-            .session-info {
-                justify-content: center;
-            }
-            
-            .checkbox-group {
-                flex-direction: column;
-            }
+        
+        .none-checkbox {
+            width: 100%;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-brain"></i> ParkinPT</h1>
-            <p>Sistema de Monitoreo de Riesgo Prodrómico de Parkinson</p>
+        <!-- ... (todo el HTML anterior se mantiene igual hasta la sección de medicamentos) ... -->
+        
+        <!-- Profile Tab -->
+        <div id="profile" class="tab-content active">
+            <h2>Mi Perfil Médico</h2>
+            <p>Complete su información médica para una evaluación más precisa</p>
+            
+            <div class="profile-completion" id="profile-completion-status">
+                <h3><i class="fas fa-clipboard-check"></i> Estado del Perfil</h3>
+                <p>Complete los campos obligatorios para obtener una evaluación precisa.</p>
+                <div id="completion-progress"></div>
+            </div>
+            
+            <div class="profile-form">
+                <h3><i class="fas fa-user-circle"></i> Información Personal</h3>
+                <div class="form-group">
+                    <label for="profile-name">Nombre o Identificador:</label>
+                    <input type="text" id="profile-name" class="form-control" placeholder="Ej: Juan Pérez" required>
+                    <div class="field-error" id="name-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="profile-birthdate">Fecha de Nacimiento:</label>
+                    <input type="date" id="profile-birthdate" class="form-control" required>
+                    <div class="field-error" id="birthdate-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="profile-sex">Sexo:</label>
+                    <select id="profile-sex" class="form-control" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="male">Masculino</option>
+                        <option value="female">Femenino</option>
+                    </select>
+                    <div class="field-error" id="sex-error"></div>
+                </div>
+                
+                <h3 style="margin-top: 30px;"><i class="fas fa-stethoscope"></i> Antecedentes Médicos</h3>
+                <div class="form-group">
+                    <label for="profile-family-history">Antecedentes familiares de Parkinson:</label>
+                    <select id="profile-family-history" class="form-control" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="yes">Sí</option>
+                        <option value="no">No</option>
+                        <option value="unknown">No estoy seguro</option>
+                    </select>
+                    <div class="field-error" id="family-history-error"></div>
+                </div>
+                
+                <!-- SECCIÓN MODIFICADA: Medicamentos -->
+                <div class="medication-section">
+                    <h4><i class="fas fa-pills"></i> Medicamentos Actuales</h4>
+                    <p>Seleccione los medicamentos que toma regularmente:</p>
+                    
+                    <!-- Opción "No tomo medicamentos" -->
+                    <div class="none-option" id="no-medications-option">
+                        <div class="checkbox-item none-checkbox">
+                            <input type="checkbox" id="no-medications" name="no-medications">
+                            <label for="no-medications"><strong>No tomo ningún medicamento regularmente</strong></label>
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox-group with-none" id="medication-checkboxes">
+                        <!-- Los medicamentos se cargarán dinámicamente -->
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label for="other-medications">Otros medicamentos (especifique):</label>
+                        <input type="text" id="other-medications" class="form-control" placeholder="Ej: Omeprazol, Atorvastatina...">
+                    </div>
+                </div>
+                
+                <!-- SECCIÓN MODIFICADA: Condiciones Médicas -->
+                <div class="condition-section">
+                    <h4><i class="fas fa-file-medical"></i> Condiciones Médicas</h4>
+                    <p>Seleccione las condiciones médicas que le han diagnosticado:</p>
+                    
+                    <!-- Opción "No tengo condiciones médicas" -->
+                    <div class="none-option" id="no-conditions-option">
+                        <div class="checkbox-item none-checkbox">
+                            <input type="checkbox" id="no-conditions" name="no-conditions">
+                            <label for="no-conditions"><strong>No tengo condiciones médicas diagnosticadas</strong></label>
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox-group with-none" id="condition-checkboxes">
+                        <!-- Las condiciones se cargarán dinámicamente -->
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label for="other-conditions">Otras condiciones (especifique):</label>
+                        <input type="text" id="other-conditions" class="form-control" placeholder="Ej: Migraña, Artritis...">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-notes">Notas Médicas Adicionales:</label>
+                    <textarea id="profile-notes" class="form-control" rows="4" placeholder="Puede agregar información relevante sobre su salud, cirugías previas, alergias..."></textarea>
+                </div>
+                
+                <button class="btn btn-success" id="save-profile-btn">
+                    <i class="fas fa-save"></i> Guardar Perfil
+                </button>
+            </div>
+            
+            <!-- ... (el resto del HTML se mantiene igual) ... -->
         </div>
-
-        <div class="tabs">
-            <div class="tab active" data-tab="profile">
-                <i class="fas fa-user"></i>
-                <span>Mi Perfil</span>
-            </div>
-            <div class="tab" data-tab="instructions">
-                <i class="fas fa-info-circle"></i>
-                <span>Instrucciones</span>
-            </div>
-            <div class="tab" data-tab="evaluation">
-                <i class="fas fa-clipboard-check"></i>
-                <span>Evaluación</span>
-            </div>
-            <div class="tab" data-tab="results">
-                <i class="fas fa-chart-line"></i>
-                <span>Resultados</span>
-            </div>
-            <div class="tab" data-tab="history">
-                <i class="fas fa-history"></i>
-                <span>Historial</span>
-            </div>
-        </div>
-
-        <div class="content">
-            <!-- User Session Info -->
-            <div class="user-session">
-                <div class="session-info">
-                    <div class="user-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div>
-                        <div id="user-name">Usuario Anónimo</div>
-                        <div id="session-date" style="font-size: 0.9em; color: #7f8c8d;"></div>
-                    </div>
-                </div>
-                <div class="session-controls">
-                    <button class="btn btn-outline" id="new-session-btn">
-                        <i class="fas fa-plus"></i> Nueva Sesión
-                    </button>
-                    <button class="btn btn-primary" id="save-session-btn">
-                        <i class="fas fa-save"></i> Guardar
-                    </button>
-                    <button class="btn btn-warning" id="print-btn">
-                        <i class="fas fa-print"></i> Imprimir
-                    </button>
-                </div>
-            </div>
-
-            <!-- Profile Tab -->
-            <div id="profile" class="tab-content active">
-                <h2>Mi Perfil Médico</h2>
-                <p>Complete su información médica para una evaluación más precisa</p>
-                
-                <div class="profile-completion" id="profile-completion-status">
-                    <h3><i class="fas fa-clipboard-check"></i> Estado del Perfil</h3>
-                    <p>Complete todos los campos para obtener una evaluación precisa.</p>
-                    <div id="completion-progress"></div>
-                </div>
-                
-                <div class="profile-form">
-                    <h3><i class="fas fa-user-circle"></i> Información Personal</h3>
-                    <div class="form-group">
-                        <label for="profile-name">Nombre o Identificador:</label>
-                        <input type="text" id="profile-name" class="form-control" placeholder="Ej: Juan Pérez" required>
-                        <div class="field-error" id="name-error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="profile-birthdate">Fecha de Nacimiento:</label>
-                        <input type="date" id="profile-birthdate" class="form-control" required>
-                        <div class="field-error" id="birthdate-error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="profile-sex">Sexo:</label>
-                        <select id="profile-sex" class="form-control" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="male">Masculino</option>
-                            <option value="female">Femenino</option>
-                        </select>
-                        <div class="field-error" id="sex-error"></div>
-                    </div>
-                    
-                    <h3 style="margin-top: 30px;"><i class="fas fa-stethoscope"></i> Antecedentes Médicos</h3>
-                    <div class="form-group">
-                        <label for="profile-family-history">Antecedentes familiares de Parkinson:</label>
-                        <select id="profile-family-history" class="form-control" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="yes">Sí</option>
-                            <option value="no">No</option>
-                            <option value="unknown">No estoy seguro</option>
-                        </select>
-                        <div class="field-error" id="family-history-error"></div>
-                    </div>
-                    
-                    <!-- SECCIÓN: Medicamentos -->
-                    <div class="medication-section">
-                        <h4><i class="fas fa-pills"></i> Medicamentos Actuales</h4>
-                        <p>Seleccione los medicamentos que toma regularmente:</p>
-                        <div class="checkbox-group" id="medication-checkboxes">
-                            <!-- Los medicamentos se cargarán dinámicamente -->
-                        </div>
-                        <div class="form-group" style="margin-top: 15px;">
-                            <label for="other-medications">Otros medicamentos (especifique):</label>
-                            <input type="text" id="other-medications" class="form-control" placeholder="Ej: Omeprazol, Atorvastatina...">
-                        </div>
-                    </div>
-                    
-                    <!-- SECCIÓN: Condiciones Médicas -->
-                    <div class="condition-section">
-                        <h4><i class="fas fa-file-medical"></i> Condiciones Médicas</h4>
-                        <p>Seleccione las condiciones médicas que le han diagnosticado:</p>
-                        <div class="checkbox-group" id="condition-checkboxes">
-                            <!-- Las condiciones se cargarán dinámicamente -->
-                        </div>
-                        <div class="form-group" style="margin-top: 15px;">
-                            <label for="other-conditions">Otras condiciones (especifique):</label>
-                            <input type="text" id="other-conditions" class="form-control" placeholder="Ej: Migraña, Artritis...">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="profile-notes">Notas Médicas Adicionales:</label>
-                        <textarea id="profile-notes" class="form-control" rows="4" placeholder="Puede agregar información relevante sobre su salud, cirugías previas, alergias..."></textarea>
-                    </div>
-                    
-                    <button class="btn btn-success" id="save-profile-btn">
-                        <i class="fas fa-save"></i> Guardar Perfil
-                    </button>
-                </div>
-                
-                <div class="data-management" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
-                    <h3>Gestión de Datos</h3>
-                    <p>Sus datos se almacenan localmente en este navegador.</p>
-                    <div class="action-buttons">
-                        <button class="btn btn-outline" id="export-data-btn">
-                            <i class="fas fa-download"></i> Exportar Datos
-                        </button>
-                        <button class="btn btn-outline" id="import-data-btn">
-                            <i class="fas fa-upload"></i> Importar Datos
-                        </button>
-                        <button class="btn btn-warning" id="clear-data-btn">
-                            <i class="fas fa-trash"></i> Limpiar Datos
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Instructions Tab -->
-            <div id="instructions" class="tab-content">
-                <div class="instructions-container">
-                    <h2>Instrucciones de la Prueba</h2>
-                    <p>ParkinPT es una herramienta científica diseñada para evaluar el riesgo de estar en la fase prodrómica de la enfermedad de Parkinson.</p>
-                    
-                    <div class="instructions-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h3>Complete Su Perfil</h3>
-                            <p>Comience completando su perfil médico en la primera pestaña. Esta información es crucial para una evaluación precisa.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="instructions-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h3>Crear una Sesión</h3>
-                            <p>Comience creando una nueva sesión para realizar su evaluación. Puede guardar múltiples sesiones para seguir su evolución a lo largo del tiempo.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="instructions-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h3>Evaluar Síntomas</h3>
-                            <p>Revise cada síntoma en los diferentes dominios. Marque solo los síntomas que ha experimentado persistentemente en los últimos 3 meses.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="instructions-step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <h3>Obtener Resultados</h3>
-                            <p>El sistema calculará automáticamente su riesgo basado en algoritmos científicos validados. Los resultados se muestran con un porcentaje de riesgo y recomendaciones.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="disclaimer-box">
-                        <h3><i class="fas fa-exclamation-triangle"></i> Aviso Legal y Limitaciones</h3>
-                        <p><strong>Esta herramienta no proporciona un diagnóstico médico.</strong> ParkinPT es una herramienta de evaluación de riesgo basada en investigación científica, pero:</p>
-                        <ul>
-                            <li>No sustituye la evaluación de un profesional de la salud</li>
-                            <li>No constituye un diagnóstico de enfermedad de Parkinson</li>
-                            <li>Los resultados deben ser interpretados por un médico calificado</li>
-                            <li>El uso es responsabilidad del usuario</li>
-                            <li>Los datos se almacenan localmente en su navegador</li>
-                        </ul>
-                        <p><strong>Si experimenta síntomas preocupantes, consulte inmediatamente con su médico.</strong></p>
-                    </div>
-                    
-                    <div class="bibliography">
-                        <h3><i class="fas fa-book"></i> Fundamentos Científicos</h3>
-                        <p>Esta herramienta se basa en los criterios de investigación de la International Parkinson and Movement Disorder Society (MDS) para la fase prodrómica de la enfermedad de Parkinson. Los síntomas y puntuaciones utilizados están basados en el artículo <em>"MDS research criteria for prodromal Parkinson's disease"</em> (Berg et al., 2015) y actualizaciones posteriores.</p>
-                        <p>La evaluación incluye dominios de síntomas de nivel A (mayor evidencia predictiva) y nivel B (evidencia predictiva moderada), identificados en estudios prospectivos de cohortes como el PRIPS, TREND y PPMI.</p>
-                    </div>
-                    
-                    <div class="bibliography">
-                        <h3><i class="fas fa-book"></i> Bibliografía Científica</h3>
-                        <ul>
-                            <li>Berg, D., et al. (2015). MDS research criteria for prodromal Parkinson's disease. <em>Movement Disorders</em>, 30(12), 1600-1611.</li>
-                            <li>Heinzel, S., et al. (2019). Update of the MDS research criteria for prodromal Parkinson's disease. <em>Movement Disorders</em>, 34(10), 1464-1470.</li>
-                            <li>Postuma, R. B., et al. (2012). Identifying prodromal Parkinson's disease: Pre-Motor disorders in Parkinson's disease. <em>Movement Disorders</em>, 27(5), 617-626.</li>
-                            <li>Mahlknecht, P., et al. (2015). Prodromal Parkinson's disease: hype or hope for disease-modification trials? <em>Translational Neurodegeneration</em>, 4, 11.</li>
-                            <li>Noyce, A. J., et al. (2017). PREDICT-PD: An online approach to prospectively identify risk indicators of Parkinson's disease. <em>Movement Disorders</em>, 32(2), 219-226.</li>
-                            <li>Nature. (2025). Early detection of Parkinson's disease: a combined approach using machine learning and symptom-based risk assessment. <em>Nature Communications</em>, 16, 123.</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn btn-success" id="start-evaluation-btn">
-                            <i class="fas fa-play"></i> Comenzar Evaluación
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Evaluation Tab -->
-            <div id="evaluation" class="tab-content">
-                <h2>Evaluación de Síntomas</h2>
-                <p>Seleccione los síntomas que ha experimentado persistentemente en los últimos 3 meses:</p>
-                
-                <!-- SECCIÓN: Duración de Síntomas -->
-                <div class="domain-section">
-                    <div class="domain-header">
-                        <div class="domain-title">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Duración de los Síntomas</span>
-                        </div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="domain-content active" id="domain-duration">
-                        <div class="symptom-item">
-                            <div class="symptom-text">
-                                <label>¿Cuánto tiempo ha experimentado estos síntomas?</label>
-                                <select id="symptom-duration" class="form-control">
-                                    <option value="lessThan3Months">Menos de 3 meses</option>
-                                    <option value="3to12Months">3-12 meses</option>
-                                    <option value="moreThan1Year">1-2 años</option>
-                                    <option value="moreThan2Years">Más de 2 años</option>
-                                </select>
-                                <div class="symptom-context">
-                                    <div class="context-title"><i class="fas fa-info-circle"></i> Importante:</div>
-                                    La duración de los síntomas ayuda a evaluar la cronicidad y persistencia, factores importantes en la evaluación del riesgo prodrómico.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="evaluation-content">
-                    <!-- Los dominios y síntomas se cargarán aquí mediante JavaScript -->
-                </div>
-                
-                <div class="loading-spinner" id="calculation-spinner">
-                    <i class="fas fa-spinner fa-spin fa-2x"></i>
-                    <p>Calculando riesgo...</p>
-                </div>
-                
-                <div class="action-buttons">
-                    <button class="btn btn-success" id="calculate-risk-btn">
-                        <i class="fas fa-calculator"></i> Calcular Riesgo Prodrómico
-                    </button>
-                </div>
-            </div>
-
-            <!-- Results Tab -->
-            <div id="results" class="tab-content">
-                <div id="results-content">
-                    <!-- Los resultados se cargarán aquí mediante JavaScript -->
-                </div>
-            </div>
-
-            <!-- History Tab -->
-            <div id="history" class="tab-content">
-                <h2>Historial de Evaluaciones</h2>
-                <p>Seguimiento de sus resultados a lo largo del tiempo</p>
-                
-                <div class="history-container" id="history-content">
-                    <!-- El historial se cargará aquí mediante JavaScript -->
-                </div>
-                
-                <div class="chart-container">
-                    <canvas id="riskTrendChart"></canvas>
-                </div>
-                
-                <div id="progression-analysis-container">
-                    <!-- El análisis de progresión se cargará aquí mediante JavaScript -->
-                </div>
-            </div>
-        </div>
+        
+        <!-- ... (el resto del HTML se mantiene igual) ... -->
     </div>
 
     <script>
@@ -1144,361 +152,7 @@
         // DATOS CIENTÍFICOS ACTUALIZADOS CON EVIDENCIA
         // =============================================
 
-        // Síntomas basados en criterios MDS y artículo de Nature (2025)
-        const symptomsData = {
-            movement: {
-                title: "Movimiento (Nivel A)",
-                icon: "fas fa-walking",
-                symptoms: [
-                    {
-                        id: "tremor",
-                        name: "Temblor en reposo",
-                        description: "Temblor en las manos, piernas o mentón cuando está en reposo completo",
-                        frequency: "Frecuencia típica: Ocurre diariamente, empeora con el estrés",
-                        context: "CARACTERÍSTICO DE PARKINSON: Temblor que desaparece al iniciar movimiento voluntario",
-                        weight: 3,
-                        impact: "high",
-                        tier: "A"
-                    },
-                    {
-                        id: "dexterity",
-                        name: "Dificultades con la destreza manual",
-                        description: "Problemas para abrochar botones, escribir, usar cubiertos",
-                        frequency: "Frecuencia: Dificultades consistentes en actividades diarias",
-                        context: "Indica posible bradicinesia o rigidez temprana",
-                        weight: 3,
-                        impact: "high",
-                        tier: "A"
-                    },
-                    {
-                        id: "gait",
-                        name: "Cambios en la marcha y equilibrio",
-                        description: "Pasos más cortos, arrastrar pies, dificultad para girar, pérdida de equilibrio",
-                        frequency: "Frecuencia: Observado regularmente al caminar",
-                        context: "La marcha parkinsoniana típica incluye pasos cortos y arrastrados",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    },
-                    {
-                        id: "rigidity",
-                        name: "Rigidez muscular",
-                        description: "Sensación de tensión o resistencia al movimiento en brazos o piernas",
-                        frequency: "Frecuencia: Persistente, no relacionada con ejercicio o lesión",
-                        context: "Síntoma cardinal de Parkinson, puede preceder el diagnóstico por años",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    }
-                ]
-            },
-            cognitive: {
-                title: "Cognitivo (Nivel A)",
-                icon: "fas fa-brain",
-                symptoms: [
-                    {
-                        id: "memory",
-                        name: "Problemas de memoria",
-                        description: "Dificultad para recordar información reciente o encontrar palabras",
-                        frequency: "Frecuencia: Varias veces por semana, afectando actividades diarias",
-                        context: "En Parkinson temprano suele ser leve pero persistente",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    },
-                    {
-                        id: "concentration",
-                        name: "Dificultad para concentrarse",
-                        description: "Problemas para mantener la atención en tareas",
-                        frequency: "Frecuencia: Dificultad diaria para enfocarse",
-                        context: "Puede ser un signo temprano de deterioro cognitivo leve",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    },
-                    {
-                        id: "executive",
-                        name: "Dificultades en funciones ejecutivas",
-                        description: "Problemas para planificar, organizar o realizar múltiples tareas",
-                        frequency: "Frecuencia: Interfiere con actividades laborales o domésticas",
-                        context: "Las disfunciones ejecutivas son comunes en Parkinson prodrómico",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    }
-                ]
-            },
-            sleep: {
-                title: "Sueño (Nivel A)",
-                icon: "fas fa-bed",
-                symptoms: [
-                    {
-                        id: "rbd",
-                        name: "Trastorno de conducta del sueño REM",
-                        description: "Actuar los sueños (golpear, patear, gritar) mientras duerme",
-                        frequency: "Frecuencia: Varias veces por mes o más",
-                        context: "PREDICTOR FUERTE: Hasta 80% de personas con RBD desarrollan Parkinson",
-                        weight: 3,
-                        impact: "high",
-                        tier: "A"
-                    },
-                    {
-                        id: "insomnia",
-                        name: "Insomnio",
-                        description: "Dificultad para conciliar el sueño o mantenerlo",
-                        frequency: "Frecuencia: Varias noches por semana",
-                        context: "Común en Parkinson, puede preceder el diagnóstico por años",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    },
-                    {
-                        id: "daytime_sleepiness",
-                        name: "Somnolencia diurna excesiva",
-                        description: "Sueño durante el día a pesar de dormir suficiente por la noche",
-                        frequency: "Frecuencia: Interfiere con actividades diarias",
-                        context: "Puede indicar alteraciones del sueño relacionadas con neurodegeneración",
-                        weight: 1,
-                        impact: "low",
-                        tier: "B"
-                    }
-                ]
-            },
-            sensory: {
-                title: "Sensorial (Nivel A)",
-                icon: "fas fa-hand-paper",
-                symptoms: [
-                    {
-                        id: "smell",
-                        name: "Pérdida del olfato (hiposmia/anosmia)",
-                        description: "Dificultad para oler alimentos, flores, perfumes u otros olores",
-                        frequency: "Frecuencia: Pérdida progresiva y persistente",
-                        context: "PREDICTOR FUERTE: Ocurre años antes del diagnóstico en muchos casos",
-                        weight: 3,
-                        impact: "high",
-                        tier: "A"
-                    },
-                    {
-                        id: "fatigue",
-                        name: "Fatiga",
-                        description: "Cansancio extremo que no mejora con el descanso",
-                        frequency: "Frecuencia: Diario o casi diario",
-                        context: "Fatiga persistente sin causa aparente puede ser prodrómica",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    },
-                    {
-                        id: "pain",
-                        name: "Dolores inexplicables",
-                        description: "Dolores musculares o articulares sin causa aparente",
-                        frequency: "Frecuencia: Persistente, no relacionada con actividad física",
-                        context: "El dolor crónico puede ser un síntoma prodrómico en algunos casos",
-                        weight: 1,
-                        impact: "low",
-                        tier: "B"
-                    }
-                ]
-            },
-            autonomic: {
-                title: "Autonómico (Nivel A)",
-                icon: "fas fa-heartbeat",
-                symptoms: [
-                    {
-                        id: "constipation",
-                        name: "Estreñimiento crónico",
-                        description: "Dificultad persistente para evacuar, menos de 3 veces por semana",
-                        frequency: "Frecuencia: Persistente durante meses",
-                        context: "PREDICTOR FUERTE: Relacionado con afectación del sistema nervioso entérico",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    },
-                    {
-                        id: "orthostatic",
-                        name: "Mareos al levantarse (hipotensión ortostática)",
-                        description: "Mareo o aturdimiento al levantarse rápidamente",
-                        frequency: "Frecuencia: Ocurre regularmente al cambiar de posición",
-                        context: "Indica posible disfunción autonómica temprana",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    },
-                    {
-                        id: "urinary",
-                        name: "Problemas urinarios",
-                        description: "Urgencia urinaria, frecuencia aumentada o incontinencia",
-                        frequency: "Frecuencia: Interfiere con actividades diarias",
-                        context: "Puede reflejar afectación del sistema nervioso autónomo",
-                        weight: 1,
-                        impact: "low",
-                        tier: "B"
-                    }
-                ]
-            },
-            psychiatric: {
-                title: "Psiquiátrico (Nivel A)",
-                icon: "fas fa-smile",
-                symptoms: [
-                    {
-                        id: "depression",
-                        name: "Depresión",
-                        description: "Estado de ánimo bajo persistente, pérdida de interés en actividades",
-                        frequency: "Frecuencia: Persistente durante semanas o más",
-                        context: "La depresión puede preceder el diagnóstico de Parkinson por años",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    },
-                    {
-                        id: "anxiety",
-                        name: "Ansiedad",
-                        description: "Preocupación excesiva, ataques de pánico o ansiedad generalizada",
-                        frequency: "Frecuencia: Interfiere con la vida diaria",
-                        context: "Común en Parkinson prodrómico, especialmente ansiedad generalizada",
-                        weight: 2,
-                        impact: "moderate",
-                        tier: "A"
-                    },
-                    {
-                        id: "apathy",
-                        name: "Apatía",
-                        description: "Falta de motivación, interés reducido en actividades",
-                        frequency: "Frecuencia: Persistente, notado por familiares o amigos",
-                        context: "Puede ser un signo temprano de cambios neuropsiquiátricos",
-                        weight: 1,
-                        impact: "low",
-                        tier: "B"
-                    }
-                ]
-            }
-        };
-
-        // Likelihood Ratios CORREGIDOS basados en evidencia científica
-        const likelihoodRatios = {
-            // Síntomas motores (Nivel A) - Valores corregidos
-            tremor: 2.1,
-            dexterity: 1.9,
-            gait: 1.7,
-            rigidity: 1.6,
-            
-            // Síntomas no motores clave - Valores corregidos  
-            rbd: 38.2,
-            smell: 3.8,
-            constipation: 2.3,
-            orthostatic: 1.8,
-            urinary: 1.4,
-            depression: 1.6,
-            anxiety: 1.4,
-            apathy: 1.5,
-            memory: 1.4,
-            concentration: 1.3,
-            executive: 1.9,
-            insomnia: 1.3,
-            daytime_sleepiness: 1.3,
-            fatigue: 1.4,
-            pain: 1.2,
-            
-            // Factores no modificables - Valores corregidos
-            male: 1.5,
-            familyHistory: 1.8
-        };
-
-        // Datos de medicamentos y condiciones médicas
-        const medicationsData = [
-            { id: "antipsychotics", name: "Antipsicóticos/Neurolépticos", category: "parkinsonism" },
-            { id: "antiemetics", name: "Antieméticos (Metoclopramida, etc.)", category: "parkinsonism" },
-            { id: "antidepressants", name: "Antidepresivos", category: "neutral" },
-            { id: "anxiolytics", name: "Ansiolíticos", category: "neutral" },
-            { id: "antihypertensives", name: "Medicamentos para la presión", category: "neutral" },
-            { id: "statins", name: "Estatinas (colesterol)", category: "neutral" },
-            { id: "diabetes_meds", name: "Medicamentos para diabetes", category: "neutral" },
-            { id: "thyroid_meds", name: "Medicamentos para tiroides", category: "neutral" }
-        ];
-
-        const conditionsData = [
-            { id: "essential_tremor", name: "Temblor esencial", category: "neurological" },
-            { id: "diabetes", name: "Diabetes", category: "metabolic" },
-            { id: "hypertension", name: "Hipertensión", category: "cardiovascular" },
-            { id: "thyroid", name: "Problemas de tiroides", category: "endocrine" },
-            { id: "depression_history", name: "Depresión (historial)", category: "psychiatric" },
-            { id: "anxiety_history", name: "Ansiedad (historial)", category: "psychiatric" },
-            { id: "stroke", name: "Historial de ACV/derrame", category: "neurological" },
-            { id: "heart_disease", name: "Enfermedad cardíaca", category: "cardiovascular" }
-        ];
-
-        // Sistema de interacciones medicamentosas actualizado
-        const medicationInteractions = {
-            antipsychotics: {
-                parkinsonismRisk: 0.3,
-                symptoms: ['tremor', 'rigidity', 'gait'],
-                notes: "Puede causar parkinsonismo inducido por medicamentos"
-            },
-            antiemetics: {
-                parkinsonismRisk: 0.4,
-                symptoms: ['tremor', 'dexterity'],
-                notes: "Especialmente metoclopramida y proclorperazina"
-            },
-            antidepressants: {
-                parkinsonismRisk: 1.0,
-                symptoms: [],
-                notes: "Generalmente neutro, pero puede afectar síntomas en algunos casos"
-            },
-            anxiolytics: {
-                parkinsonismRisk: 1.0,
-                symptoms: [],
-                notes: "Generalmente neutro"
-            },
-            antihypertensives: {
-                parkinsonismRisk: 1.0,
-                symptoms: [],
-                notes: "Generalmente neutro"
-            },
-            statins: {
-                parkinsonismRisk: 1.0,
-                symptoms: [],
-                notes: "Generalmente neutro"
-            },
-            diabetes_meds: {
-                parkinsonismRisk: 1.0,
-                symptoms: [],
-                notes: "Generalmente neutro"
-            },
-            thyroid_meds: {
-                parkinsonismRisk: 1.0,
-                symptoms: [],
-                notes: "Generalmente neutro"
-            }
-        };
-
-        // Factores de ajuste clínico actualizados
-        const clinicalAdjustments = {
-            medications: {
-                antipsychotics: 0.3,
-                antiemetics: 0.4,
-                antidepressants: 1.0,
-                anxiolytics: 1.0,
-                antihypertensives: 1.0,
-                statins: 1.0,
-                diabetes_meds: 1.0,
-                thyroid_meds: 1.0,
-                none: 1.0
-            },
-            comorbidities: {
-                essential_tremor: 0.7,
-                diabetes: 0.8,
-                thyroid: 0.9,
-                stroke: 0.8,
-                heart_disease: 0.9,
-                none: 1.0
-            },
-            symptomDuration: {
-                lessThan3Months: 0.3,
-                "3to12Months": 0.7,
-                moreThan1Year: 1.2,
-                moreThan2Years: 1.5
-            }
-        };
+        // ... (todos los datos científicos anteriores se mantienen igual) ...
 
         // =============================================
         // ESTADO DE LA APLICACIÓN
@@ -1521,98 +175,16 @@
             conditions: [],
             otherMedications: "",
             otherConditions: "",
-            notes: ""
+            notes: "",
+            noMedications: false,  // NUEVO: indicador de "no medicamentos"
+            noConditions: false     // NUEVO: indicador de "no condiciones"
         };
 
         // =============================================
-        // FUNCIONES PRINCIPALES
+        // FUNCIONES PRINCIPALES MODIFICADAS
         // =============================================
 
-        function generateSessionId() {
-            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        }
-
-        function calculateAge(birthdate) {
-            if (!birthdate) return 60;
-            const today = new Date();
-            const birthDate = new Date(birthdate);
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            return age;
-        }
-
-        function getBaselineRisk(age) {
-            // Basado en GBD 2016 Parkinson's Disease Collaborators, Lancet Neurology
-            if (age < 50) return 0.0001;
-            if (age < 60) return 0.0005;
-            if (age < 70) return 0.002;
-            if (age < 80) return 0.005;
-            return 0.008;
-        }
-
-        function adjustForCorrelation(selectedSymptoms, combinedLR) {
-            let adjustedLR = combinedLR;
-            
-            // Grupo 1: RBD + Hipoosmia (alta correlación)
-            if (selectedSymptoms.includes('rbd') && selectedSymptoms.includes('smell')) {
-                adjustedLR *= 0.66;
-            }
-            
-            // Grupo 2: Síntomas autonómicos múltiples
-            const autonomicSymptoms = ['constipation', 'orthostatic', 'urinary'];
-            const autonomicCount = selectedSymptoms.filter(s => autonomicSymptoms.includes(s)).length;
-            if (autonomicCount >= 2) {
-                adjustedLR *= 0.75;
-            }
-            
-            return adjustedLR;
-        }
-
-        function calculateAdvancedClinicalAdjustment() {
-            let adjustment = 1.0;
-            let adjustmentDetails = [];
-            
-            // Ajuste por medicamentos que causan parkinsonismo
-            const parkinsonismMeds = userProfile.medications.filter(med => 
-                medicationInteractions[med] && medicationInteractions[med].parkinsonismRisk < 1.0
-            );
-            
-            if (parkinsonismMeds.length > 0) {
-                const medAdjustment = parkinsonismMeds.reduce((acc, med) => 
-                    acc * medicationInteractions[med].parkinsonismRisk, 1.0
-                );
-                adjustment *= medAdjustment;
-                adjustmentDetails.push({
-                    type: 'medicamentos_parkinsonismo',
-                    factor: medAdjustment.toFixed(2),
-                    items: parkinsonismMeds.map(med => ({
-                        name: medicationsData.find(m => m.id === med)?.name,
-                        risk: medicationInteractions[med].parkinsonismRisk
-                    }))
-                });
-            }
-            
-            // Ajuste por condiciones que simulan Parkinson
-            const simulatingConditions = userProfile.conditions.filter(cond =>
-                ['essential_tremor', 'stroke'].includes(cond)
-            );
-            
-            if (simulatingConditions.length > 0) {
-                adjustment *= 0.7;
-                adjustmentDetails.push({
-                    type: 'condiciones_simuladoras',
-                    factor: 0.70,
-                    items: simulatingConditions.map(cond => 
-                        conditionsData.find(c => c.id === cond)?.name
-                    )
-                });
-            }
-            
-            return { adjustment, details: adjustmentDetails };
-        }
+        // ... (las funciones anteriores se mantienen igual hasta validateProfileData) ...
 
         function validateProfileData() {
             const errors = [];
@@ -1634,255 +206,13 @@
                 errors.push("La fecha de nacimiento es obligatoria");
             }
             
-            if (userProfile.medications.length === 0 && userProfile.conditions.length === 0) {
-                errors.push("Por favor seleccione al menos un medicamento o condición médica");
-            }
+            // MODIFICADO: Ya no es obligatorio seleccionar medicamentos o condiciones
+            // El usuario puede indicar explícitamente que no toma medicamentos o no tiene condiciones
             
             return errors;
         }
 
-        function setupRealTimeValidation() {
-            const inputs = document.querySelectorAll('#profile input, #profile select, #profile textarea');
-            inputs.forEach(input => {
-                input.addEventListener('blur', function() {
-                    validateField(this);
-                });
-            });
-        }
-
-        function validateField(field) {
-            const value = field.value.trim();
-            field.classList.remove('valid', 'invalid');
-            
-            if (!value && field.hasAttribute('required')) {
-                field.classList.add('invalid');
-                showFieldError(field, 'Este campo es obligatorio');
-                return false;
-            }
-            
-            switch(field.id) {
-                case 'profile-birthdate':
-                    if (value) {
-                        const birthdate = new Date(value);
-                        const today = new Date();
-                        if (birthdate > today) {
-                            field.classList.add('invalid');
-                            showFieldError(field, 'La fecha no puede ser futura');
-                            return false;
-                        }
-                        const age = calculateAge(value);
-                        if (age > 120) {
-                            field.classList.add('invalid');
-                            showFieldError(field, 'La edad no puede ser mayor a 120 años');
-                            return false;
-                        }
-                        if (age < 18) {
-                            field.classList.add('invalid');
-                            showFieldError(field, 'Debe ser mayor de 18 años');
-                            return false;
-                        }
-                    }
-                    break;
-                case 'profile-name':
-                    if (value.length < 2) {
-                        field.classList.add('invalid');
-                        showFieldError(field, 'El nombre debe tener al menos 2 caracteres');
-                        return false;
-                    }
-                    break;
-            }
-            
-            field.classList.add('valid');
-            clearFieldError(field);
-            return true;
-        }
-
-        function showFieldError(field, message) {
-            let errorElement = field.parentNode.querySelector('.field-error');
-            if (!errorElement) {
-                errorElement = document.createElement('div');
-                errorElement.className = 'field-error';
-                field.parentNode.appendChild(errorElement);
-            }
-            errorElement.textContent = message;
-            errorElement.classList.add('show');
-        }
-
-        function clearFieldError(field) {
-            const errorElement = field.parentNode.querySelector('.field-error');
-            if (errorElement) {
-                errorElement.classList.remove('show');
-            }
-        }
-
-        function analyzeProgression(sessions) {
-            if (sessions.length < 2) return null;
-            
-            const sortedSessions = sessions
-                .filter(s => s.results)
-                .sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-            const firstSession = sortedSessions[0];
-            const lastSession = sortedSessions[sortedSessions.length - 1];
-            
-            const riskChange = lastSession.results.riskPercentage - firstSession.results.riskPercentage;
-            const monthsDiff = monthDifference(firstSession.date, lastSession.date);
-            const riskChangePerMonth = monthsDiff > 0 ? riskChange / monthsDiff : 0;
-            
-            let progressionLevel = 'estable';
-            if (riskChangePerMonth > 1) progressionLevel = 'aceleracion-moderada';
-            if (riskChangePerMonth > 2) progressionLevel = 'aceleracion-significativa';
-            if (riskChangePerMonth < -0.5) progressionLevel = 'mejoria';
-            
-            return {
-                riskChange,
-                riskChangePerMonth,
-                progressionLevel,
-                timeSpanMonths: monthsDiff,
-                sessionsCompared: sortedSessions.length,
-                firstDate: firstSession.date,
-                lastDate: lastSession.date
-            };
-        }
-
-        function monthDifference(date1, date2) {
-            const d1 = new Date(date1);
-            const d2 = new Date(date2);
-            return (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth());
-        }
-
-        function determineMDSCriteriaRisk(riskPercentage, selectedSymptoms, combinedLR, baselineRisk) {
-            let riskLevel, riskClass, mdsCategory, recommendation, interpretation, actionPlan;
-            
-            const hasCoreSymptoms = selectedSymptoms.includes('rbd') || 
-                                   selectedSymptoms.includes('smell') ||
-                                   selectedSymptoms.includes('tremor');
-            
-            const symptomCount = selectedSymptoms.length;
-            const domainCount = new Set(selectedSymptoms.map(s => {
-                for (const domain in symptomsData) {
-                    if (symptomsData[domain].symptoms.find(symp => symp.id === s)) {
-                        return domain;
-                    }
-                }
-                return null;
-            })).size;
-
-            let domainsAffected = new Set();
-            let tierACount = 0;
-            let tierBCount = 0;
-            
-            for (const symptomId in currentSession.symptoms) {
-                for (const domain in symptomsData) {
-                    const symptom = symptomsData[domain].symptoms.find(s => s.id === symptomId);
-                    if (symptom) {
-                        domainsAffected.add(domain);
-                        if (symptom.tier === "A") {
-                            tierACount++;
-                        } else {
-                            tierBCount++;
-                        }
-                        break;
-                    }
-                }
-            }
-            
-            interpretation = `
-                Su evaluación integra dos componentes clave:
-                <br><br>
-                <strong>1. Riesgo Poblacional Base:</strong> ${(baselineRisk * 100).toFixed(3)}% 
-                (riesgo esperado para su grupo de edad en la población general)
-                <br><br>
-                <strong>2. Factor Individual:</strong> Su perfil de síntomas multiplica este riesgo ×${combinedLR.toFixed(1)}
-                <br><br>
-                El análisis de cohortes poblacionales indica que la combinación de ${symptomCount} 
-                síntomas prodrómicos aumenta significativamente la probabilidad de conversión a Parkinson 
-                en los próximos 5-10 años, especialmente cuando incluye síntomas específicos como RBD o hiposmia.
-            `;
-            
-            if (riskPercentage >= 80 && hasCoreSymptoms && domainCount >= 2) {
-                riskLevel = "ALTA PROBABILIDAD MDS";
-                mdsCategory = "Probable Parkinson Prodrómico";
-                riskClass = "risk-high";
-                recommendation = `Su perfil indica alta probabilidad según criterios MDS (${riskPercentage.toFixed(2)}%). Estudios sugieren que más del 80% de personas con este perfil desarrollan la enfermedad en los próximos 5-10 años. Esto NO constituye un diagnóstico, pero justifica una evaluación médica especializada inmediata.`;
-                actionPlan = `
-                    <ul>
-                        <li><strong>Consulta neurológica urgente:</strong> Programar cita con neurólogo especialista en trastornos del movimiento</li>
-                        <li><strong>Evaluación exhaustiva:</strong> Examen neurológico completo, posiblemente incluyendo pruebas de imagen</li>
-                        <li><strong>Seguimiento estrecho:</strong> Evaluaciones regulares cada 3-6 meses para monitorizar cambios</li>
-                        <li><strong>Participación en investigación:</strong> Considerar participación en estudios sobre fases prodrómicas</li>
-                        <li><strong>Planificación anticipada:</strong> Discutir con familiares y prepararse para posibles escenarios futuros</li>
-                    </ul>
-                `;
-            } else if (riskPercentage >= 30 && symptomCount >= 2) {
-                riskLevel = "PROBABILIDAD MDS INTERMEDIA";
-                mdsCategory = "Posible Parkinson Prodrómico";
-                riskClass = "risk-medium";
-                recommendation = `Su perfil sugiere probabilidad intermedia según criterios MDS (${riskPercentage.toFixed(2)}%). Aproximadamente 1 de cada 3 personas con este perfil podrían desarrollar Parkinson en los próximos 5-10 años. Se recomienda consultar con su médico de cabecera para una evaluación más detallada.`;
-                actionPlan = `
-                    <ul>
-                        <li><strong>Consulta médica:</strong> Programar cita con médico de cabecera para evaluación inicial</li>
-                        <li><strong>Evaluación neurológica:</strong> Considerar derivación a neurólogo para evaluación especializada</li>
-                        <li><strong>Pruebas complementarias:</strong> Podrían recomendarse pruebas de olfato, evaluación del sueño, etc.</li>
-                        <li><strong>Seguimiento regular:</strong> Repetir evaluación cada 6-12 meses o ante cambios en síntomas</li>
-                        <li><strong>Estilo de vida:</strong> Enfatizar ejercicio aeróbico, dieta mediterránea, manejo del estrés</li>
-                    </ul>
-                `;
-            } else {
-                riskLevel = "BAJA PROBABILIDAD MDS";
-                mdsCategory = "Riesgo Bajo";
-                riskClass = "risk-low";
-                recommendation = "Su perfil de riesgo es bajo según los criterios MDS actuales. Menos del 30% de probabilidad de estar en fase prodrómica de Parkinson. Se recomienda mantener un estilo de vida saludable y realizar controles médicos periódicos.";
-                actionPlan = `
-                    <ul>
-                        <li><strong>Mantener estilo de vida saludable:</strong> Ejercicio regular, dieta equilibrada, sueño adecuado</li>
-                        <li><strong>Control médico anual:</strong> Incluir evaluación neurológica básica en chequeos regulares</li>
-                        <li><strong>Monitorear síntomas:</strong> Registrar cualquier cambio en la frecuencia o intensidad de síntomas</li>
-                        <li><strong>Factores protectores:</strong> Mantener actividad cognitiva, socialización, evitar toxinas ambientales</li>
-                    </ul>
-                `;
-            }
-            
-            currentSession.results = {
-                riskPercentage,
-                riskLevel,
-                riskClass,
-                recommendation,
-                interpretation,
-                actionPlan,
-                baselineRisk: baselineRisk * 100,
-                combinedLR,
-                symptomCount,
-                domainsAffected: domainsAffected.size,
-                tierACount,
-                tierBCount,
-                mdsCategory,
-                date: new Date().toISOString()
-            };
-        }
-
-        function getAppliedCriteria(selectedSymptoms) {
-            const criteria = [];
-            
-            if (selectedSymptoms.includes('rbd')) {
-                criteria.push("RBD (criterio principal MDS)");
-            }
-            if (selectedSymptoms.includes('smell')) {
-                criteria.push("Hipoosmia (criterio principal MDS)");
-            }
-            
-            const domainCount = new Set(selectedSymptoms.map(s => {
-                for (const domain in symptomsData) {
-                    if (symptomsData[domain].symptoms.find(symp => symp.id === s)) return domain;
-                }
-                return null;
-            })).size;
-            
-            criteria.push(`${domainCount} dominios sintomáticos`);
-            criteria.push(`${selectedSymptoms.length} síntomas totales`);
-            
-            return criteria.join(', ');
-        }
+        // ... (las funciones anteriores se mantienen igual hasta generateMedicalCheckboxes) ...
 
         function generateMedicalCheckboxes() {
             const medContainer = document.getElementById('medication-checkboxes');
@@ -1892,7 +222,7 @@
                 const checkboxItem = document.createElement('div');
                 checkboxItem.className = 'checkbox-item';
                 checkboxItem.innerHTML = `
-                    <input type="checkbox" id="med-${med.id}" value="${med.id}">
+                    <input type="checkbox" id="med-${med.id}" value="${med.id}" class="medication-checkbox">
                     <label for="med-${med.id}">${med.name}</label>
                 `;
                 medContainer.appendChild(checkboxItem);
@@ -1905,23 +235,94 @@
                 const checkboxItem = document.createElement('div');
                 checkboxItem.className = 'checkbox-item';
                 checkboxItem.innerHTML = `
-                    <input type="checkbox" id="cond-${cond.id}" value="${cond.id}">
+                    <input type="checkbox" id="cond-${cond.id}" value="${cond.id}" class="condition-checkbox">
                     <label for="cond-${cond.id}">${cond.name}</label>
                 `;
                 condContainer.appendChild(checkboxItem);
+            });
+            
+            // NUEVO: Agregar event listeners para las opciones "Ninguno"
+            setupNoneOptions();
+        }
+
+        // NUEVA FUNCIÓN: Configurar el comportamiento de las opciones "Ninguno"
+        function setupNoneOptions() {
+            const noMedsCheckbox = document.getElementById('no-medications');
+            const noConditionsCheckbox = document.getElementById('no-conditions');
+            const medCheckboxes = document.querySelectorAll('.medication-checkbox');
+            const conditionCheckboxes = document.querySelectorAll('.condition-checkbox');
+            
+            // Comportamiento para "No tomo medicamentos"
+            noMedsCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // Desmarcar todos los medicamentos
+                    medCheckboxes.forEach(cb => {
+                        cb.checked = false;
+                        cb.disabled = true;
+                    });
+                    document.getElementById('other-medications').disabled = true;
+                    document.getElementById('no-medications-option').classList.add('selected');
+                } else {
+                    // Habilitar todos los medicamentos
+                    medCheckboxes.forEach(cb => {
+                        cb.disabled = false;
+                    });
+                    document.getElementById('other-medications').disabled = false;
+                    document.getElementById('no-medications-option').classList.remove('selected');
+                }
+            });
+            
+            // Comportamiento para "No tengo condiciones"
+            noConditionsCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // Desmarcar todas las condiciones
+                    conditionCheckboxes.forEach(cb => {
+                        cb.checked = false;
+                        cb.disabled = true;
+                    });
+                    document.getElementById('other-conditions').disabled = true;
+                    document.getElementById('no-conditions-option').classList.add('selected');
+                } else {
+                    // Habilitar todas las condiciones
+                    conditionCheckboxes.forEach(cb => {
+                        cb.disabled = false;
+                    });
+                    document.getElementById('other-conditions').disabled = false;
+                    document.getElementById('no-conditions-option').classList.remove('selected');
+                }
+            });
+            
+            // Si se selecciona algún medicamento, desmarcar "No tomo medicamentos"
+            medCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    if (this.checked) {
+                        noMedsCheckbox.checked = false;
+                        noMedsCheckbox.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
+            
+            // Si se selecciona alguna condición, desmarcar "No tengo condiciones"
+            conditionCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    if (this.checked) {
+                        noConditionsCheckbox.checked = false;
+                        noConditionsCheckbox.dispatchEvent(new Event('change'));
+                    }
+                });
             });
         }
 
         function updateProfileCompletion() {
             const completionElement = document.getElementById('completion-progress');
             let completedFields = 0;
-            const totalFields = 5;
+            const totalFields = 4; // MODIFICADO: Ahora son 4 campos obligatorios
             
             if (userProfile.name && userProfile.name !== "Usuario Anónimo") completedFields++;
             if (userProfile.birthdate) completedFields++;
             if (userProfile.sex) completedFields++;
             if (userProfile.familyHistory) completedFields++;
-            if (userProfile.medications.length > 0 || userProfile.conditions.length > 0) completedFields++;
+            // MODIFICADO: Ya no se requiere medicamentos o condiciones
             
             const percentage = Math.round((completedFields / totalFields) * 100);
             
@@ -1944,14 +345,14 @@
                     </div>
                     <div style="font-weight: bold; color: ${statusColor}">${percentage}% - ${statusText}</div>
                 </div>
-                <p style="margin-top: 10px; font-size: 0.9em;">${completedFields} de ${totalFields} campos completados</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">${completedFields} de ${totalFields} campos obligatorios completados</p>
             `;
             
             return percentage;
         }
 
         // =============================================
-        // INICIALIZACIÓN DE LA APLICACIÓN
+        // INICIALIZACIÓN DE LA APLICACIÓN MODIFICADA
         // =============================================
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1989,504 +390,51 @@
             switchTab('profile');
         });
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.getElementById(tabId).classList.add('active');
-            
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-            
-            if (tabId === 'results') {
-                displayResults();
-            } else if (tabId === 'history') {
-                displayHistory();
-            } else if (tabId === 'profile') {
-                updateProfileCompletion();
-            }
-        }
+        // ... (las funciones anteriores se mantienen igual hasta saveProfile) ...
 
-        function generateEvaluationInterface() {
-            const evaluationContent = document.getElementById('evaluation-content');
-            evaluationContent.innerHTML = '';
+        function saveProfile() {
+            userProfile.name = document.getElementById('profile-name').value || 'Usuario Anónimo';
+            userProfile.birthdate = document.getElementById('profile-birthdate').value;
+            userProfile.sex = document.getElementById('profile-sex').value;
+            userProfile.familyHistory = document.getElementById('profile-family-history').value;
+            userProfile.otherMedications = document.getElementById('other-medications').value;
+            userProfile.otherConditions = document.getElementById('other-conditions').value;
+            userProfile.notes = document.getElementById('profile-notes').value;
             
-            for (const domain in symptomsData) {
-                const domainData = symptomsData[domain];
-                
-                const domainSection = document.createElement('div');
-                domainSection.className = 'domain-section';
-                
-                const domainHeader = document.createElement('div');
-                domainHeader.className = 'domain-header';
-                domainHeader.innerHTML = `
-                    <div class="domain-title">
-                        <i class="${domainData.icon}"></i>
-                        <span>${domainData.title}</span>
-                    </div>
-                    <i class="fas fa-chevron-down"></i>
-                `;
-                
-                const domainContent = document.createElement('div');
-                domainContent.className = 'domain-content';
-                domainContent.id = `domain-${domain}`;
-                
-                domainData.symptoms.forEach(symptom => {
-                    const symptomItem = document.createElement('div');
-                    symptomItem.className = `symptom-item ${symptom.impact}-impact`;
-                    
-                    symptomItem.innerHTML = `
-                        <label class="custom-checkbox">
-                            <input type="checkbox" value="${symptom.weight}" id="symptom-${symptom.id}" data-symptom="${symptom.id}">
-                            <span class="checkmark"></span>
-                        </label>
-                        <div class="symptom-text">
-                            <label for="symptom-${symptom.id}">${symptom.name} <span class="symptom-weight weight-${symptom.impact}">${symptom.weight} puntos</span> <span class="badge">Nivel ${symptom.tier}</span></label>
-                            <div class="symptom-description">${symptom.description}</div>
-                            <div class="symptom-frequency">${symptom.frequency}</div>
-                            <div class="symptom-context">
-                                <div class="context-title"><i class="fas fa-stethoscope"></i> Relevancia para Parkinson:</div>
-                                ${symptom.context}
-                            </div>
-                        </div>
-                    `;
-                    
-                    domainContent.appendChild(symptomItem);
-                    
-                    const checkbox = symptomItem.querySelector('input[type="checkbox"]');
-                    checkbox.addEventListener('change', function() {
-                        if (this.checked) {
-                            currentSession.symptoms[symptom.id] = parseInt(this.value);
-                        } else {
-                            delete currentSession.symptoms[symptom.id];
-                        }
-                    });
+            // NUEVO: Capturar las opciones "Ninguno"
+            userProfile.noMedications = document.getElementById('no-medications').checked;
+            userProfile.noConditions = document.getElementById('no-conditions').checked;
+            
+            userProfile.medications = [];
+            if (!userProfile.noMedications) {
+                medicationsData.forEach(med => {
+                    const checkbox = document.getElementById(`med-${med.id}`);
+                    if (checkbox && checkbox.checked) {
+                        userProfile.medications.push(med.id);
+                    }
                 });
-                
-                domainHeader.addEventListener('click', function() {
-                    domainContent.classList.toggle('active');
-                    const icon = this.querySelector('.fa-chevron-down');
-                    icon.classList.toggle('fa-chevron-down');
-                    icon.classList.toggle('fa-chevron-up');
-                });
-                
-                domainSection.appendChild(domainHeader);
-                domainSection.appendChild(domainContent);
-                evaluationContent.appendChild(domainSection);
             }
-        }
+            
+            userProfile.conditions = [];
+            if (!userProfile.noConditions) {
+                conditionsData.forEach(cond => {
+                    const checkbox = document.getElementById(`cond-${cond.id}`);
+                    if (checkbox && checkbox.checked) {
+                        userProfile.conditions.push(cond.id);
+                    }
+                });
+            }
 
-        function newSession() {
-            currentSession = {
-                id: generateSessionId(),
-                date: new Date().toISOString(),
-                symptoms: {},
-                results: null,
-                clinicalAdjustmentDetails: []
-            };
+            const errors = validateProfileData();
+            if (errors.length > 0) {
+                alert('Errores en el perfil:\n\n' + errors.join('\n'));
+                return;
+            }
             
-            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                if (checkbox.id.startsWith('symptom-')) {
-                    checkbox.checked = false;
-                }
-            });
-            
-            document.getElementById('symptom-duration').value = 'lessThan3Months';
-            
+            localStorage.setItem('parkinpt_profile', JSON.stringify(userProfile));
             updateSessionDisplay();
-            switchTab('evaluation');
-            alert('Nueva sesión creada. Complete la evaluación.');
-        }
-
-        function updateSessionDisplay() {
-            document.getElementById('session-date').textContent = 
-                `Sesión: ${new Date(currentSession.date).toLocaleDateString()} ${new Date(currentSession.date).toLocaleTimeString()}`;
-                
-            document.getElementById('user-name').textContent = userProfile.name || 'Usuario Anónimo';
-        }
-
-        function saveSession() {
-            if (Object.keys(currentSession.symptoms).length === 0) {
-                alert('Complete la evaluación antes de guardar.');
-                return;
-            }
-            
-            if (!currentSession.results) {
-                calculateEnhancedRisk();
-            }
-            
-            const sessions = JSON.parse(localStorage.getItem('parkinpt_sessions') || '[]');
-            
-            const existingIndex = sessions.findIndex(s => s.id === currentSession.id);
-            if (existingIndex !== -1) {
-                sessions[existingIndex] = currentSession;
-            } else {
-                sessions.push(currentSession);
-            }
-            
-            localStorage.setItem('parkinpt_sessions', JSON.stringify(sessions));
-            alert('Sesión guardada correctamente');
-            
-            if (document.getElementById('history').classList.contains('active')) {
-                displayHistory();
-            }
-        }
-
-        function calculateEnhancedRisk() {
-            const selectedSymptoms = Object.keys(currentSession.symptoms);
-            if (selectedSymptoms.length === 0) {
-                alert('Seleccione al menos un síntoma para calcular el riesgo.');
-                return;
-            }
-            
-            document.getElementById('calculation-spinner').classList.add('active');
-            document.body.classList.add('calculating');
-            
-            setTimeout(() => {
-                try {
-                    const userAge = calculateAge(userProfile.birthdate);
-                    const baselineRisk = getBaselineRisk(userAge);
-                    
-                    let combinedLR = 1;
-                    
-                    selectedSymptoms.forEach(symptomId => {
-                        if (likelihoodRatios[symptomId]) {
-                            combinedLR *= likelihoodRatios[symptomId];
-                        }
-                    });
-                    
-                    if (userProfile.sex === 'male') {
-                        combinedLR *= likelihoodRatios.male;
-                    }
-                    
-                    if (userProfile.familyHistory === 'yes') {
-                        combinedLR *= likelihoodRatios.familyHistory;
-                    }
-                    
-                    combinedLR = adjustForCorrelation(selectedSymptoms, combinedLR);
-                    const clinicalAdjustmentResult = calculateAdvancedClinicalAdjustment();
-                    combinedLR *= clinicalAdjustmentResult.adjustment;
-                    
-                    currentSession.clinicalAdjustmentDetails = clinicalAdjustmentResult.details;
-                    
-                    const postTestProbability = (baselineRisk * combinedLR) / 
-                                              ((baselineRisk * combinedLR) + (1 - baselineRisk));
-                    
-                    const riskPercentage = postTestProbability * 100;
-                    
-                    determineMDSCriteriaRisk(riskPercentage, selectedSymptoms, combinedLR, baselineRisk);
-                    
-                    document.getElementById('calculation-spinner').classList.remove('active');
-                    document.body.classList.remove('calculating');
-                    
-                    displayResults();
-                    switchTab('results');
-                } catch (error) {
-                    console.error('Error en cálculo de riesgo:', error);
-                    alert('Error al calcular el riesgo. Por favor, intente nuevamente.');
-                    document.getElementById('calculation-spinner').classList.remove('active');
-                    document.body.classList.remove('calculating');
-                }
-            }, 1500);
-        }
-
-        function displayResults() {
-            if (!currentSession.results) {
-                document.getElementById('results-content').innerHTML = `
-                    <div class="results-container">
-                        <h3>No hay resultados disponibles</h3>
-                        <p>Complete la evaluación primero para ver los resultados.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            const results = currentSession.results;
-            const domainNames = {
-                movement: "Movimiento",
-                cognitive: "Cognitivo",
-                sleep: "Sueño",
-                sensory: "Sensorial",
-                autonomic: "Autonómico",
-                psychiatric: "Psiquiátrico"
-            };
-            
-            let selectedSymptomsDetails = [];
-            for (const symptomId in currentSession.symptoms) {
-                for (const domain in symptomsData) {
-                    const symptom = symptomsData[domain].symptoms.find(s => s.id === symptomId);
-                    if (symptom) {
-                        selectedSymptomsDetails.push({
-                            name: symptom.name,
-                            domain: domainNames[domain],
-                            tier: symptom.tier,
-                            weight: symptom.weight
-                        });
-                        break;
-                    }
-                }
-            }
-            
-            let domainsList = "";
-            for (const domain in symptomsData) {
-                const hasSymptoms = symptomsData[domain].symptoms.some(s => 
-                    Object.keys(currentSession.symptoms).includes(s.id)
-                );
-                if (hasSymptoms) {
-                    domainsList += `<span class="badge">${domainNames[domain]}</span> `;
-                }
-            }
-            
-            let symptomsDetailsHTML = "";
-            selectedSymptomsDetails.forEach(symptom => {
-                symptomsDetailsHTML += `
-                    <div class="symptom-detail">
-                        <h4>${symptom.name}</h4>
-                        <p><strong>Dominio:</strong> ${symptom.domain} | <strong>Nivel de evidencia:</strong> ${symptom.tier} | <strong>Peso:</strong> ${symptom.weight} puntos</p>
-                    </div>
-                `;
-            });
-            
-            let adjustmentHTML = '';
-            if (currentSession.clinicalAdjustmentDetails && currentSession.clinicalAdjustmentDetails.length > 0) {
-                adjustmentHTML = `
-                    <div class="adjustment-factor">
-                        <h4><i class="fas fa-adjust"></i> Factores Clínicos Aplicados</h4>
-                        <p>Se aplicó un factor de ajuste basado en:</p>
-                        <ul>
-                `;
-                
-                currentSession.clinicalAdjustmentDetails.forEach(detail => {
-                    adjustmentHTML += `<li><strong>${detail.type.replace('_', ' ')}:</strong> `;
-                    if (detail.items) {
-                        adjustmentHTML += detail.items.map(item => {
-                            if (typeof item === 'object') {
-                                return `${item.name} (×${item.risk})`;
-                            } else {
-                                return item;
-                            }
-                        }).join(', ');
-                    }
-                    if (detail.count) {
-                        adjustmentHTML += ` (${detail.count} medicamentos)`;
-                    }
-                    if (detail.factor) {
-                        adjustmentHTML += ` - Factor: ×${detail.factor}`;
-                    }
-                    adjustmentHTML += `</li>`;
-                });
-                
-                adjustmentHTML += `</ul></div>`;
-            }
-            
-            document.getElementById('results-content').innerHTML = `
-                <div class="results-container">
-                    <h2>Resultados de la Evaluación</h2>
-                    <div class="risk-score">${results.riskPercentage.toFixed(2)}%</div>
-                    <div class="risk-level ${results.riskClass}">${results.riskLevel}</div>
-                    
-                    <div class="mds-badge">${results.mdsCategory}</div>
-                    
-                    <div class="stats-container">
-                        <div class="stat-card">
-                            <div class="stat-value">${(results.baselineRisk).toFixed(3)}%</div>
-                            <div class="stat-label">Riesgo Basal (Población)</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${results.combinedLR.toFixed(1)}x</div>
-                            <div class="stat-label">Factor Individual</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${results.symptomCount}</div>
-                            <div class="stat-label">Síntomas</div>
-                        </div>
-                    </div>
-                    
-                    <div class="interpretation-detail">
-                        <h3><i class="fas fa-chart-bar"></i> Interpretación Detallada</h3>
-                        <p>${results.interpretation}</p>
-                        <p><strong>Dominios con síntomas:</strong> ${domainsList || "Ninguno"}</p>
-                        <p><strong>Síntomas de nivel A (alta evidencia):</strong> ${results.tierACount} | <strong>Síntomas de nivel B (evidencia moderada):</strong> ${results.tierBCount}</p>
-                    </div>
-                    
-                    <div class="interpretation-detail">
-                        <h3><i class="fas fa-stethoscope"></i> Clasificación MDS</h3>
-                        <p><strong>Categoría:</strong> ${results.mdsCategory}</p>
-                        <p><strong>Criterios aplicados:</strong> ${getAppliedCriteria(Object.keys(currentSession.symptoms))}</p>
-                    </div>
-                    
-                    ${adjustmentHTML}
-                    
-                    <div class="symptom-details">
-                        <h3><i class="fas fa-clipboard-list"></i> Síntomas Seleccionados</h3>
-                        ${symptomsDetailsHTML}
-                    </div>
-                    
-                    <div class="action-plan">
-                        <h3><i class="fas fa-tasks"></i> Plan de Acción Recomendado</h3>
-                        ${results.actionPlan}
-                    </div>
-                    
-                    <div class="recommendation-box">
-                        <h3><i class="fas fa-stethoscope"></i> Recomendación Médica</h3>
-                        <p>${results.recommendation}</p>
-                        <p><strong>Importante:</strong> Estos resultados se basan en algoritmos científicos pero no sustituyen la evaluación de un médico. Consulte con un profesional de la salud para una evaluación completa.</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function displayHistory() {
-            const sessions = JSON.parse(localStorage.getItem('parkinpt_sessions') || '[]');
-            const historyContent = document.getElementById('history-content');
-            const progressionContainer = document.getElementById('progression-analysis-container');
-            
-            if (sessions.length === 0) {
-                historyContent.innerHTML = '<p>No hay sesiones guardadas. Complete una evaluación y guárdela para ver el historial.</p>';
-                progressionContainer.innerHTML = '';
-                return;
-            }
-            
-            sessions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            let historyHTML = '<h3>Evaluaciones Anteriores</h3>';
-            
-            sessions.forEach(session => {
-                if (session.results) {
-                    const date = new Date(session.date);
-                    historyHTML += `
-                        <div class="timeline-item">
-                            <div class="timeline-date">${date.toLocaleDateString()}</div>
-                            <div class="timeline-content">
-                                <div class="timeline-risk ${session.results.riskClass}">${session.results.riskPercentage.toFixed(1)}% - ${session.results.riskLevel}</div>
-                                <p>Síntomas: ${Object.keys(session.symptoms).length} | Dominios: ${session.results.domainsAffected} | ${session.results.mdsCategory}</p>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            
-            historyContent.innerHTML = historyHTML;
-            
-            const progression = analyzeProgression(sessions);
-            if (progression) {
-                let progressionLevelText = '';
-                switch(progression.progressionLevel) {
-                    case 'estable':
-                        progressionLevelText = 'Riesgo estable';
-                        break;
-                    case 'aceleracion-moderada':
-                        progressionLevelText = 'Aceleración moderada del riesgo';
-                        break;
-                    case 'aceleracion-significativa':
-                        progressionLevelText = 'Aceleración significativa del riesgo';
-                        break;
-                    case 'mejoria':
-                        progressionLevelText = 'Mejoría en el perfil de riesgo';
-                        break;
-                }
-                
-                progressionContainer.innerHTML = `
-                    <div class="progression-analysis">
-                        <h3><i class="fas fa-chart-line"></i> Análisis de Progresión</h3>
-                        <p>Comparando ${progression.sessionsCompared} evaluaciones desde ${new Date(progression.firstDate).toLocaleDateString()} hasta ${new Date(progression.lastDate).toLocaleDateString()}</p>
-                        <div class="stats-container" style="grid-template-columns: repeat(2, 1fr); margin: 15px 0;">
-                            <div class="stat-card">
-                                <div class="stat-value">${progression.riskChange > 0 ? '+' : ''}${progression.riskChange.toFixed(2)}%</div>
-                                <div class="stat-label">Cambio total en riesgo</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value">${progression.riskChangePerMonth > 0 ? '+' : ''}${progression.riskChangePerMonth.toFixed(2)}%</div>
-                                <div class="stat-label">Cambio mensual promedio</div>
-                            </div>
-                        </div>
-                        <div class="progression-level ${progression.progressionLevel}">
-                            <strong>Nivel de progresión:</strong> ${progressionLevelText}
-                        </div>
-                        <p style="margin-top: 15px; font-size: 0.9em;">
-                            <i class="fas fa-info-circle"></i> 
-                            ${progression.riskChangePerMonth > 0 ? 
-                                'Se observa un aumento en el riesgo prodrómico. Consulte con su médico para evaluación.' :
-                                progression.riskChangePerMonth < 0 ?
-                                'Se observa una disminución en el riesgo prodrómico. Continúe con el monitoreo.' :
-                                'El riesgo se mantiene estable. Continúe con evaluaciones periódicas.'
-                            }
-                        </p>
-                    </div>
-                `;
-            } else {
-                progressionContainer.innerHTML = `
-                    <div class="progression-analysis">
-                        <h3><i class="fas fa-chart-line"></i> Análisis de Progresión</h3>
-                        <p>Se necesitan al menos 2 evaluaciones para analizar la progresión del riesgo.</p>
-                    </div>
-                `;
-            }
-            
-            generateTrendChart(sessions);
-        }
-
-        function generateTrendChart(sessions) {
-            const ctx = document.getElementById('riskTrendChart').getContext('2d');
-            
-            const sessionsWithResults = sessions
-                .filter(s => s.results)
-                .sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-            if (sessionsWithResults.length === 0) {
-                document.getElementById('riskTrendChart').parentElement.innerHTML = '<p>No hay datos suficientes para mostrar el gráfico de tendencias.</p>';
-                return;
-            }
-            
-            const dates = sessionsWithResults.map(s => 
-                new Date(s.date).toLocaleDateString()
-            );
-            
-            const risks = sessionsWithResults.map(s => s.results.riskPercentage);
-            
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [{
-                        label: 'Riesgo Prodrómico (%)',
-                        data: risks,
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Evolución del Riesgo Prodrómico'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            title: {
-                                display: true,
-                                text: 'Riesgo (%)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Fecha de Evaluación'
-                            }
-                        }
-                    }
-                }
-            });
+            updateProfileCompletion();
+            alert('Perfil guardado correctamente');
         }
 
         function loadUserProfile() {
@@ -2502,91 +450,39 @@
                 document.getElementById('other-conditions').value = userProfile.otherConditions || '';
                 document.getElementById('profile-notes').value = userProfile.notes || '';
                 
-                userProfile.medications.forEach(medId => {
-                    const checkbox = document.getElementById(`med-${medId}`);
-                    if (checkbox) checkbox.checked = true;
-                });
+                // NUEVO: Cargar las opciones "Ninguno"
+                if (userProfile.noMedications !== undefined) {
+                    document.getElementById('no-medications').checked = userProfile.noMedications;
+                    // Disparar el evento change para actualizar la UI
+                    document.getElementById('no-medications').dispatchEvent(new Event('change'));
+                }
                 
-                userProfile.conditions.forEach(condId => {
-                    const checkbox = document.getElementById(`cond-${condId}`);
-                    if (checkbox) checkbox.checked = true;
-                });
+                if (userProfile.noConditions !== undefined) {
+                    document.getElementById('no-conditions').checked = userProfile.noConditions;
+                    // Disparar el evento change para actualizar la UI
+                    document.getElementById('no-conditions').dispatchEvent(new Event('change'));
+                }
+                
+                // Solo cargar medicamentos/condiciones si no están deshabilitados por "Ninguno"
+                if (!userProfile.noMedications) {
+                    userProfile.medications.forEach(medId => {
+                        const checkbox = document.getElementById(`med-${medId}`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+                
+                if (!userProfile.noConditions) {
+                    userProfile.conditions.forEach(condId => {
+                        const checkbox = document.getElementById(`cond-${condId}`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
                 
                 updateSessionDisplay();
             }
         }
 
-        function saveProfile() {
-            userProfile.name = document.getElementById('profile-name').value || 'Usuario Anónimo';
-            userProfile.birthdate = document.getElementById('profile-birthdate').value;
-            userProfile.sex = document.getElementById('profile-sex').value;
-            userProfile.familyHistory = document.getElementById('profile-family-history').value;
-            userProfile.otherMedications = document.getElementById('other-medications').value;
-            userProfile.otherConditions = document.getElementById('other-conditions').value;
-            userProfile.notes = document.getElementById('profile-notes').value;
-            
-            userProfile.medications = [];
-            medicationsData.forEach(med => {
-                const checkbox = document.getElementById(`med-${med.id}`);
-                if (checkbox && checkbox.checked) {
-                    userProfile.medications.push(med.id);
-                }
-            });
-            
-            userProfile.conditions = [];
-            conditionsData.forEach(cond => {
-                const checkbox = document.getElementById(`cond-${cond.id}`);
-                if (checkbox && checkbox.checked) {
-                    userProfile.conditions.push(cond.id);
-                }
-            });
-
-            const errors = validateProfileData();
-            if (errors.length > 0) {
-                alert('Errores en el perfil:\n\n' + errors.join('\n'));
-                return;
-            }
-            
-            localStorage.setItem('parkinpt_profile', JSON.stringify(userProfile));
-            updateSessionDisplay();
-            updateProfileCompletion();
-            alert('Perfil guardado correctamente');
-        }
-
-        function loadSessions() {
-            // Esta función se usa para inicializar datos si es necesario
-        }
-
-        function exportData() {
-            const sessions = JSON.parse(localStorage.getItem('parkinpt_sessions') || '[]');
-            const profile = JSON.parse(localStorage.getItem('parkinpt_profile') || '{}');
-            
-            const data = {
-                profile,
-                sessions,
-                exportDate: new Date().toISOString()
-            };
-            
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `parkinpt_data_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function clearData() {
-            if (confirm('¿Está seguro de que desea eliminar todos sus datos? Esta acción no se puede deshacer.')) {
-                localStorage.removeItem('parkinpt_sessions');
-                localStorage.removeItem('parkinpt_profile');
-                alert('Todos los datos han sido eliminados.');
-                location.reload();
-            }
-        }
+        // ... (el resto de las funciones se mantienen igual) ...
     </script>
 </body>
 </html>
